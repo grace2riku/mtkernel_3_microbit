@@ -1,0 +1,7 @@
+# すべて無視
+*
+
+# 必要なものだけ例外
+!.gitignore
+!app_sample/
+!app_sample/**
