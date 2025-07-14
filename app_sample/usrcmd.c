@@ -39,6 +39,8 @@
 #include <tm/tmonitor.h>
 #define uart_puts tm_printf
 
+#include "ad.h"
+
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
 static int usrcmd_ntopt_callback(int argc, char **argv, void *extobj);
@@ -119,7 +121,16 @@ static int usrcmd_info(int argc, char **argv)
     return -1;
 }
 
+
 static int usrcmd_getLineSensorValue(int argc, char **argv) {
+	_H adc_data[2];
     uart_puts("left(P0), center(P1), right(P2)\r\n");
+
+    // ch0=AIN0(RING0),ch1=AIN1(RING1) でA/D変換
+	analogRead2(adc_data);
+
+	// A/D変換結果をコンソールに出力
+	tm_printf("%d, %d\n", adc_data[0], adc_data[1]);
+
 	return 0;
 }
