@@ -123,14 +123,14 @@ static int usrcmd_info(int argc, char **argv)
 
 
 static int usrcmd_getLineSensorValue(int argc, char **argv) {
-	_H adc_data[2];
+	_H adc_data[3];
     uart_puts("left(P0), center(P1), right(P2)\r\n");
 
-    // ch0=AIN0(RING0),ch1=AIN1(RING1) でA/D変換
-	analogRead2(adc_data);
+    // ch0=P0.02/AIN0(RING0==P0), ch1=P0.03/AIN1(RING1==P1), ch2=P0.04/AIN2(RING2==P2)でA/D変換
+	analogRead3(adc_data);
 
 	// A/D変換結果をコンソールに出力
-	tm_printf("%d, %d\n", adc_data[0], adc_data[1]);
+	tm_printf("%d, %d, %d\n", adc_data[0], adc_data[1], adc_data[2]);
 
 	return 0;
 }

@@ -25,33 +25,35 @@
 
 //-------- SAADCを使ったA/D変換 ---------------------------------
 // AD変換の結果を入れるメモリ
-#define	SAADC_DATACNT	2
-static _H saadc_data[SAADC_DATACNT];
+#define	SAADC_DATACNT	3
 
 INT	adc_poll_cnt;			// A/D変換の終了までのポーリング回数
 
-// 2チャンネルのアナログ入力値をデジタル値に変換(※B)
-EXPORT void analogRead2(_H* adc_data){
+// 3チャンネルのアナログ入力値をデジタル値に変換
+EXPORT void analogRead3(_H* adc_data){
 
-	out_w(SAADC(PSELP(0)), 1);			// CH[0]のP入力の設定(※C)
+	out_w(SAADC(PSELP(0)), 1);			// CH[0]のP入力の設定
 	out_w(SAADC(CONFIG(0)), 0);			// CH[0]のCONFIGの設定
 	
-	out_w(SAADC(PSELP(1)), 2);			// CH[1]のP入力の設定(※C)
+	out_w(SAADC(PSELP(1)), 2);			// CH[1]のP入力の設定
 	out_w(SAADC(CONFIG(1)), 0);			// CH[1]のCONFIGの設定
 
-	out_w(SAADC(RESULT_PTR), (UW)adc_data);	// 結果を入れるRAMアドレス(※D)
+	out_w(SAADC(PSELP(2)), 3);			// CH[2]のP入力の設定
+	out_w(SAADC(CONFIG(2)), 0);			// CH[2]のCONFIGの設定
+
+	out_w(SAADC(RESULT_PTR), (UW)adc_data);	// 結果を入れるRAMアドレス
 	out_w(SAADC(RESULT_MAXCNT), SAADC_DATACNT);	// 結果を入れるRAMのデータ数
 
-	out_w(SAADC(ENABLE), 1);			// SAADCのイネーブル(※E)
-	out_w(SAADC(RESOLUTION), 1);		// resolution=10bitの設定(※F)
+	out_w(SAADC(ENABLE), 1);			// SAADCのイネーブル
+	out_w(SAADC(RESOLUTION), 1);		// resolution=10bitの設定
 
-	out_w(SAADC(EVENTS_END), 0);		// 書込完了のフラグをクリア(※G)
-	out_w(SAADC(TASKS_START), 1);		// A/D変換の開始(※H)
+	out_w(SAADC(EVENTS_END), 0);		// 書込完了のフラグをクリア
+	out_w(SAADC(TASKS_START), 1);		// A/D変換の開始
 	out_w(SAADC(TASKS_SAMPLE), 1);		// サンプル入力
 	adc_poll_cnt = 0;
 
 	for(;;){							// A/D変換の書込完了を待つループ
-		if(in_w(SAADC(EVENTS_END)))		// 書込完了のレジスタを確認(※J)
+		if(in_w(SAADC(EVENTS_END)))		// 書込完了のレジスタを確認
 			 return;
 		adc_poll_cnt++;					// ポーリング回数をプラス1
 	}
