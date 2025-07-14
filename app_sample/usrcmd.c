@@ -44,6 +44,7 @@ typedef int (*USRCMDFUNC)(int argc, char **argv);
 static int usrcmd_ntopt_callback(int argc, char **argv, void *extobj);
 static int usrcmd_help(int argc, char **argv);
 static int usrcmd_info(int argc, char **argv);
+static int usrcmd_getLineSensorValue(int argc, char **argv);
 
 typedef struct {
     const char* cmd;
@@ -54,11 +55,13 @@ typedef struct {
 static const cmd_table_t cmdlist[] = {
     { "help", "This is a description text string for help command.", usrcmd_help },
     { "info", "This is a description text string for info command.", usrcmd_info },
+    { "getlv", "This command acquires the values of the left(P0), center(P1), and right(P2) line sensors.", usrcmd_getLineSensorValue },
 };
 
 enum {
   COMMAND_HELP,
   COMMAND_INFO,
+  COMMAND_GETLINESENSORVALUE,
   COMMAND_MAX
 };
 
@@ -116,3 +119,7 @@ static int usrcmd_info(int argc, char **argv)
     return -1;
 }
 
+static int usrcmd_getLineSensorValue(int argc, char **argv) {
+    uart_puts("left(P0), center(P1), right(P2)\r\n");
+	return 0;
+}
