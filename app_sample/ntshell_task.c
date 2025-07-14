@@ -7,7 +7,6 @@
 #include <tk/tkernel.h>
 #include <tm/tmonitor.h>
 
-//#include <stdio.h>
 #include "ntshell.h"
 #include "usrcmd.h"
 
@@ -60,7 +59,6 @@ LOCAL void ntshell_task(INT stacd, void *exinf)
 {
 	ntshell_t nts;
 
-//	setbuf(stdout, NULL);
 	ntshell_init(&nts, serial_read, serial_write, user_callback, 0);
 	ntshell_set_prompt(&nts, ">");
 
