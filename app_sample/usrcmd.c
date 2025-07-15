@@ -35,11 +35,22 @@
 
 #include "ntshell.h"
 #include "usrcmd.h"
+
+/*
+MEMO: size_t多重定義対応
+・現象: xprintf.hでincludeしているstring.hとinclude/tk/syslib.hでsize_tが多重定義されコンパイルエラーとなる。
+・対応内容: include/tk/syslib.hより先にxprintf.hをincludeする且つPROHIBIT_DEF_SIZE_Tを定義することで
+　include/tk/syslib.hでsize_tが定義されない。
+　結果、カーネル側のinclude/tk/syslib.hの変更が不要になる。
+*/
+#define PROHIBIT_DEF_SIZE_T
+#include "xprintf.h"	// xatoi
+
 #include <tk/tkernel.h>
 #include <tm/tmonitor.h>
 #define uart_puts tm_printf
 
-#include "xprintf.h"	// xatoi
+//#include "xprintf.h"	// xatoi
 
 #include "ad.h"
 #include "button.h"
