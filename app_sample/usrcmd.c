@@ -39,6 +39,8 @@
 #include <tm/tmonitor.h>
 #define uart_puts tm_printf
 
+#include "xprintf.h"	// xatoi
+
 #include "ad.h"
 #include "button.h"
 
@@ -49,6 +51,7 @@ static int usrcmd_help(int argc, char **argv);
 static int usrcmd_info(int argc, char **argv);
 static int usrcmd_getLineSensorValue(int argc, char **argv);
 static int usrcmd_getButton(int argc, char **argv);
+static int usrcmd_driveMotor(int argc, char **argv);
 
 typedef struct {
     const char* cmd;
@@ -59,8 +62,9 @@ typedef struct {
 static const cmd_table_t cmdlist[] = {
     { "help", "This is a description text string for help command.", usrcmd_help },
     { "info", "This is a description text string for info command.", usrcmd_info },
-    { "getlsv", "This command acquires the values of the left(P0), center(P1), and right(P2) line sensors.", usrcmd_getLineSensorValue },
-    { "getbtn", "This command is used to obtain the press status of a button(A or B or LOGO).", usrcmd_getButton },
+    { "getls", "This command acquires the values of the left(P0), center(P1), and right(P2) line sensors.", usrcmd_getLineSensorValue },
+    { "getbtn", "This command is used to obtain the press status of a button(A,B and LOGO).", usrcmd_getButton },
+    { "drivemotor", "This command drives the motor.", usrcmd_driveMotor },
 };
 
 enum {
@@ -68,6 +72,7 @@ enum {
   COMMAND_INFO,
   COMMAND_GETLINESENSORVALUE,
   COMMAND_GETBUTTON,
+  COMMAND_DRIVEMOTOR,
   COMMAND_MAX
 };
 
@@ -143,6 +148,47 @@ static int usrcmd_getLineSensorValue(int argc, char **argv) {
 static int usrcmd_getButton(int argc, char **argv) {
 	tm_printf("Button_A: %s, Button_B: %s, Button_LOGO: %s\n\n",
 			(isButtonAPressed() ? "on ": "off"), (isButtonBPressed() ? "on ": "off"), (isLogoTouched() ? "Touched ": "Not touched"));
+
+	return 0;
+}
+
+
+static int usrcmd_driveMotor(int argc, char **argv) {
+	int duty[2];
+	int drive_time_ms;
+
+    if (argc != 4) {
+        uart_puts("ex) drivemotor 50 50 1000\r\n");
+        return -1;
+    }
+
+	if (!xatoi(&argv[1], (long*)&duty[0])) {
+        uart_puts("Left motor duty error.\r\n");
+		return -21;
+	}
+	if (!(-100 <= duty[0] && duty[0] <= 100)) {
+        uart_puts("Left motor duty parameter error.\r\n");
+		return -22;
+	}
+	if (!xatoi(&argv[2], (long*)&duty[1])) {
+        uart_puts("Right motor duty error.\r\n");
+		return -31;
+	}
+	if (!(-100 <= duty[1] && duty[1] <= 100)) {
+        uart_puts("Right motor duty parameter error.\r\n");
+		return -32;
+	}
+	if (!xatoi(&argv[3], (long*)&drive_time_ms)) {
+        uart_puts("Motor drive time error.\r\n");
+		return -41;
+	}
+	if (drive_time_ms < 0) {
+        uart_puts("Motor drive time parameter error.\r\n");
+		return -42;
+	}
+
+	tm_printf("left duty = %d (%%), right duty = %d (%%), drive time = %d (ms)\n\n",
+			duty[0], duty[1], drive_time_ms);
 
 	return 0;
 }
