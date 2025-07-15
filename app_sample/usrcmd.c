@@ -40,6 +40,7 @@
 #define uart_puts tm_printf
 
 #include "ad.h"
+#include "button.h"
 
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
@@ -47,6 +48,7 @@ static int usrcmd_ntopt_callback(int argc, char **argv, void *extobj);
 static int usrcmd_help(int argc, char **argv);
 static int usrcmd_info(int argc, char **argv);
 static int usrcmd_getLineSensorValue(int argc, char **argv);
+static int usrcmd_getButton(int argc, char **argv);
 
 typedef struct {
     const char* cmd;
@@ -57,13 +59,15 @@ typedef struct {
 static const cmd_table_t cmdlist[] = {
     { "help", "This is a description text string for help command.", usrcmd_help },
     { "info", "This is a description text string for info command.", usrcmd_info },
-    { "getlv", "This command acquires the values of the left(P0), center(P1), and right(P2) line sensors.", usrcmd_getLineSensorValue },
+    { "getlsv", "This command acquires the values of the left(P0), center(P1), and right(P2) line sensors.", usrcmd_getLineSensorValue },
+    { "getbtn", "This command is used to obtain the press status of a button(A or B or LOGO).", usrcmd_getButton },
 };
 
 enum {
   COMMAND_HELP,
   COMMAND_INFO,
   COMMAND_GETLINESENSORVALUE,
+  COMMAND_GETBUTTON,
   COMMAND_MAX
 };
 
@@ -131,6 +135,14 @@ static int usrcmd_getLineSensorValue(int argc, char **argv) {
 
 	// A/D変換結果をコンソールに出力
 	tm_printf("%d, %d, %d\n", adc_data[0], adc_data[1], adc_data[2]);
+
+	return 0;
+}
+
+
+static int usrcmd_getButton(int argc, char **argv) {
+	tm_printf("Button_A: %s, Button_B: %s, Button_LOGO: %s\n\n",
+			(isButtonAPressed() ? "on ": "off"), (isButtonBPressed() ? "on ": "off"), (isLogoTouched() ? "Touched ": "Not touched"));
 
 	return 0;
 }
