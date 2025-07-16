@@ -1,14 +1,17 @@
 #include <tk/tkernel.h>
 #include <tm/tmonitor.h>
 #include "button.h"
+#include "pwm.h"
 
 /* usermain関数 */
 EXPORT INT usermain(void)
 {
 	ID ntshell_tskid; // Task ID number
 
-	button_init();
 	tm_putstring((UB*)"Start User-main program.\n");
+
+	button_init();
+	pwm_init();
 
 	IMPORT T_CTSK* get_ntshell_task_ctsk_addr();
 	ntshell_tskid = tk_cre_tsk(get_ntshell_task_ctsk_addr());

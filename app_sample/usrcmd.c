@@ -54,6 +54,7 @@ MEMO: size_t多重定義対応
 
 #include "ad.h"
 #include "button.h"
+#include "motor.h"
 
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
@@ -200,6 +201,10 @@ static int usrcmd_driveMotor(int argc, char **argv) {
 
 	tm_printf("left duty = %d (%%), right duty = %d (%%), drive time = %d (ms)\n\n",
 			duty[0], duty[1], drive_time_ms);
+
+	drive(duty[0], duty[1]);
+	tk_dly_tsk(drive_time_ms);
+	stop();
 
 	return 0;
 }
