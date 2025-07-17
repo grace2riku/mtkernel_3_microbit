@@ -1,8 +1,8 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 
-void drive(int left_duty, int right_duty);
-void stop(void);
+void motor_drive(int left_duty, int right_duty);
+void motor_stop(void);
 
 
 #endif

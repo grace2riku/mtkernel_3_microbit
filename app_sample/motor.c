@@ -10,7 +10,7 @@
 #include "pwm.h"
 #include "gpio.h"
 
-EXPORT void drive(int left_duty, int right_duty) {
+EXPORT void motor_drive(int left_duty, int right_duty) {
 	if (left_duty >= 0) {
 		// 左輪正転
 		out_gpio_pin(0, 17, 0);			// P0.17(== P13) = 0
@@ -31,7 +31,7 @@ EXPORT void drive(int left_duty, int right_duty) {
 	}
 }
 
-EXPORT void stop(void) {
+EXPORT void motor_stop(void) {
 	out_gpio_pin(0, 17, 1);	// P0.17(== P13)
 	out_gpio_pin(0, 13, 1);	// P0.13(== P15)
 	out_gpio_pin(0, 1, 1);	// P0.01(== P14)
