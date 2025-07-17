@@ -28,8 +28,8 @@
 // カウンタ上限値の定義
 #define	TOP				1023
 
-// 比較値COMP0を格納する16ビット幅のメモリ領域
-static _UH pwm_comp0;
+// 比較値COMPを格納する16ビット幅のメモリ領域
+static _UH pwm_comp[4];
 
 EXPORT void pwm_init(void) {
 	// GPIOピンを出力に設定
@@ -57,7 +57,7 @@ EXPORT void pwm_start_duty(INT unit, INT duty)
 	out_w(PWM(unit, COUNTERTOP), TOP);		// カウンタ上限値の設定
 
 	// パーセント単位のデューティ比dutyからカウンタ比較値を計算して設定
-	pwm_comp0 = (TOP - (TOP * duty / 100));
+	pwm_comp[unit] = (TOP - (TOP * duty / 100));
 
 	out_w(PWM(unit, ENABLE), (1 << 0));
 	out_w(PWM(unit, MODE), 0);
@@ -66,7 +66,7 @@ EXPORT void pwm_start_duty(INT unit, INT duty)
 	out_w(PWM(unit, DECODER), 0);			// LOAD=commonを指定
 
 	// 比較値を入れるRAMアドレスとサイズの設定
-	out_w(PWM(unit, SEQ_PTR(0)), (UW)&pwm_comp0);
+	out_w(PWM(unit, SEQ_PTR(0)), (UW)&pwm_comp[unit]);
 	out_w(PWM(unit, SEQ_CNT(0)), 1);
 	out_w(PWM(unit, SEQ_REFRESH(0)), 0);
 	out_w(PWM(unit, SEQ_ENDDELAY(0)), 0);
