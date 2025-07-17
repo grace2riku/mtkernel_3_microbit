@@ -55,6 +55,7 @@ MEMO: size_t多重定義対応
 #include "ad.h"
 #include "button.h"
 #include "motor.h"
+#include "device_id.h"
 
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
@@ -64,6 +65,7 @@ static int usrcmd_info(int argc, char **argv);
 static int usrcmd_getLineSensorValue(int argc, char **argv);
 static int usrcmd_getButton(int argc, char **argv);
 static int usrcmd_driveMotor(int argc, char **argv);
+static int usrcmd_get_device_id(int argc, char **argv);
 
 typedef struct {
     const char* cmd;
@@ -77,6 +79,7 @@ static const cmd_table_t cmdlist[] = {
     { "getls", "This command acquires the values of the left(P0), center(P1), and right(P2) line sensors.", usrcmd_getLineSensorValue },
     { "getbtn", "This command is used to obtain the press status of a button(A,B and LOGO).", usrcmd_getButton },
     { "drivemotor", "This command drives the motor.", usrcmd_driveMotor },
+    { "getdevid", "This command is used to obtain the device ID.", usrcmd_get_device_id },
 };
 
 enum {
@@ -85,6 +88,7 @@ enum {
   COMMAND_GETLINESENSORVALUE,
   COMMAND_GETBUTTON,
   COMMAND_DRIVEMOTOR,
+  COMMAND_GETDEVID,
   COMMAND_MAX
 };
 
@@ -205,6 +209,16 @@ static int usrcmd_driveMotor(int argc, char **argv) {
 	motor_drive(duty[0], duty[1]);
 	tk_dly_tsk(drive_time_ms);
 	motor_stop();
+
+	return 0;
+}
+
+static int usrcmd_get_device_id(int argc, char **argv) {
+	W devid[2];
+
+	get_device_id(devid);
+
+	tm_printf("This devid_0_1: %08x_%08x\n", devid[0], devid[1]);
 
 	return 0;
 }
