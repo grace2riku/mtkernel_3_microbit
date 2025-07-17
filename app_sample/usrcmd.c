@@ -56,6 +56,7 @@ MEMO: size_t多重定義対応
 #include "button.h"
 #include "motor.h"
 #include "device_id.h"
+#include "acceleration_sensor.h"
 
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
@@ -66,6 +67,7 @@ static int usrcmd_getLineSensorValue(int argc, char **argv);
 static int usrcmd_getButton(int argc, char **argv);
 static int usrcmd_driveMotor(int argc, char **argv);
 static int usrcmd_get_device_id(int argc, char **argv);
+static int usrcmd_read_acceleration(int argc, char **argv);
 
 typedef struct {
     const char* cmd;
@@ -80,6 +82,7 @@ static const cmd_table_t cmdlist[] = {
     { "getbtn", "This command is used to obtain the press status of a button(A,B and LOGO).", usrcmd_getButton },
     { "drivemotor", "This command drives the motor.", usrcmd_driveMotor },
     { "getdevid", "This command is used to obtain the device ID.", usrcmd_get_device_id },
+    { "readacc", "This command reads the accelerometer.", usrcmd_read_acceleration },
 };
 
 enum {
@@ -219,6 +222,16 @@ static int usrcmd_get_device_id(int argc, char **argv) {
 	get_device_id(devid);
 
 	tm_printf("This devid_0_1: %08x_%08x\n", devid[0], devid[1]);
+
+	return 0;
+}
+
+static int usrcmd_read_acceleration(int argc, char **argv){
+	int x, y, z;
+
+	acceleration_sensor_read(&x, &y, &z);
+
+	tm_printf("Acc: x,y,z=%4d,%4d,%4d\n", x, y, z);
 
 	return 0;
 }

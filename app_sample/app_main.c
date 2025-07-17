@@ -2,6 +2,7 @@
 #include <tm/tmonitor.h>
 #include "button.h"
 #include "pwm.h"
+#include "acceleration_sensor.h"
 
 /* usermain関数 */
 EXPORT INT usermain(void)
@@ -12,6 +13,7 @@ EXPORT INT usermain(void)
 
 	button_init();
 	pwm_init();
+	acceleration_sensor_init();
 
 	IMPORT T_CTSK* get_ntshell_task_ctsk_addr();
 	ntshell_tskid = tk_cre_tsk(get_ntshell_task_ctsk_addr());
