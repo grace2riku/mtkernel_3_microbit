@@ -57,6 +57,7 @@ MEMO: size_t多重定義対応
 #include "motor.h"
 #include "device_id.h"
 #include "acceleration_sensor.h"
+#include "temperature_sensor.h"
 
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
@@ -68,6 +69,7 @@ static int usrcmd_getButton(int argc, char **argv);
 static int usrcmd_driveMotor(int argc, char **argv);
 static int usrcmd_get_device_id(int argc, char **argv);
 static int usrcmd_read_acceleration(int argc, char **argv);
+static int usrcmd_read_temp(int argc, char **argv);
 
 typedef struct {
     const char* cmd;
@@ -83,6 +85,7 @@ static const cmd_table_t cmdlist[] = {
     { "drivemotor", "This command drives the motor.", usrcmd_driveMotor },
     { "getdevid", "This command is used to obtain the device ID.", usrcmd_get_device_id },
     { "readacc", "This command reads the accelerometer.", usrcmd_read_acceleration },
+    { "readtemp", "This command reads the temperature.", usrcmd_read_temp },
 };
 
 enum {
@@ -232,6 +235,14 @@ static int usrcmd_read_acceleration(int argc, char **argv){
 	acceleration_sensor_read(&x, &y, &z);
 
 	tm_printf("Acc: x,y,z=%4d,%4d,%4d\n", x, y, z);
+
+	return 0;
+}
+
+static int usrcmd_read_temp(int argc, char **argv) {
+	float temp = read_temperature();
+
+	xprintf("temp = %f C\n", temp);
 
 	return 0;
 }

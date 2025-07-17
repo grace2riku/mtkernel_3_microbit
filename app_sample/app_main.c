@@ -1,3 +1,6 @@
+#define PROHIBIT_DEF_SIZE_T
+#include "xprintf.h"	// xatoi
+
 #include <tk/tkernel.h>
 #include <tm/tmonitor.h>
 #include "button.h"
@@ -14,6 +17,9 @@ EXPORT INT usermain(void)
 	button_init();
 	pwm_init();
 	acceleration_sensor_init();
+
+	/* xprintfシリアル送信関数登録 */
+	xdev_out(tm_putchar);
 
 	IMPORT T_CTSK* get_ntshell_task_ctsk_addr();
 	ntshell_tskid = tk_cre_tsk(get_ntshell_task_ctsk_addr());
