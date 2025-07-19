@@ -70,6 +70,7 @@ static int usrcmd_driveMotor(int argc, char **argv);
 static int usrcmd_get_device_id(int argc, char **argv);
 static int usrcmd_read_acceleration(int argc, char **argv);
 static int usrcmd_read_temp(int argc, char **argv);
+static int usrcmd_chk_btn_interrupt(int argc, char **argv);
 
 typedef struct {
     const char* cmd;
@@ -86,6 +87,7 @@ static const cmd_table_t cmdlist[] = {
     { "getdevid", "This command is used to obtain the device ID.", usrcmd_get_device_id },
     { "readacc", "This command reads the accelerometer.", usrcmd_read_acceleration },
     { "readtemp", "This command reads the temperature.", usrcmd_read_temp },
+    { "chkbtnint", "This command checks for button interruptions.", usrcmd_chk_btn_interrupt },
 };
 
 enum {
@@ -95,6 +97,9 @@ enum {
   COMMAND_GETBUTTON,
   COMMAND_DRIVEMOTOR,
   COMMAND_GETDEVID,
+  COMMAND_READACC,
+  COMMAND_REATEMP,
+  COMMAND_CHKBTNINT,
   COMMAND_MAX
 };
 
@@ -243,6 +248,12 @@ static int usrcmd_read_temp(int argc, char **argv) {
 	float temp = read_temperature();
 
 	xprintf("temp = %f C\n", temp);
+
+	return 0;
+}
+
+static int usrcmd_chk_btn_interrupt(int argc, char **argv) {
+
 
 	return 0;
 }
