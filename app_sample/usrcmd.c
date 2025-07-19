@@ -253,7 +253,30 @@ static int usrcmd_read_temp(int argc, char **argv) {
 }
 
 static int usrcmd_chk_btn_interrupt(int argc, char **argv) {
+	UINT flgptn;
+	UINT waitflgptn = 0;
 
+	tm_printf("Wait until buttons A and B are pressed.\n");
+
+	// AボタンとBボタンが押されるまでループ
+	while(waitflgptn != 3){
+		// 割込み通知用イベントフラグの下位2ビットをOR待ち
+		tk_wai_flg(button_get_flgid(), 0b11, (TWF_ORW | TWF_CLR), &flgptn, TMO_FEVR);
+
+		// 最下位ビットが1の場合
+		if((flgptn & (1 << 0)) != 0) {
+			tm_printf("Button_SW_A: pushed\n"); // ボタンスイッチAの押下を表示
+			waitflgptn |= 1;
+		}
+
+		if((flgptn & (1 << 1)) != 0) {
+			// 最下位から2番目のビットが1の場合
+			tm_printf("Button_SW_B: pushed\n"); // ボタンスイッチBの押下を表示
+			waitflgptn |= 2;
+		}
+	}
+
+	tm_printf("Button_SW A & B: pushed\n");
 
 	return 0;
 }
