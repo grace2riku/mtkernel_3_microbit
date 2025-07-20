@@ -6,6 +6,7 @@
 #include "button.h"
 #include "pwm.h"
 #include "acceleration_sensor.h"
+#include "led.h"
 
 /* usermain関数 */
 EXPORT INT usermain(void)
@@ -17,6 +18,7 @@ EXPORT INT usermain(void)
 	button_init();
 	pwm_init();
 	acceleration_sensor_init();
+	led_init();
 
 	/* xprintfシリアル送信関数登録 */
 	xdev_out(tm_putchar);

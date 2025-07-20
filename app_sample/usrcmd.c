@@ -58,6 +58,7 @@ MEMO: size_t多重定義対応
 #include "device_id.h"
 #include "acceleration_sensor.h"
 #include "temperature_sensor.h"
+#include "led.h"
 
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
@@ -71,6 +72,7 @@ static int usrcmd_get_device_id(int argc, char **argv);
 static int usrcmd_read_acceleration(int argc, char **argv);
 static int usrcmd_read_temp(int argc, char **argv);
 static int usrcmd_chk_btn_interrupt(int argc, char **argv);
+static int usrcmd_led_set(int argc, char **argv);
 
 typedef struct {
     const char* cmd;
@@ -88,6 +90,7 @@ static const cmd_table_t cmdlist[] = {
     { "readacc", "This command reads the accelerometer.", usrcmd_read_acceleration },
     { "readtemp", "This command reads the temperature.", usrcmd_read_temp },
     { "chkbtnint", "This command checks for button interruptions.", usrcmd_chk_btn_interrupt },
+    { "ledset", "This command turns the LEDs on and off.", usrcmd_led_set },
 };
 
 enum {
@@ -100,6 +103,7 @@ enum {
   COMMAND_READACC,
   COMMAND_REATEMP,
   COMMAND_CHKBTNINT,
+  COMMAND_LEDSET,
   COMMAND_MAX
 };
 
@@ -277,6 +281,43 @@ static int usrcmd_chk_btn_interrupt(int argc, char **argv) {
 	}
 
 	tm_printf("Button_SW A & B: pushed\n");
+
+	return 0;
+}
+
+static int usrcmd_led_set(int argc, char **argv){
+	UW row, col, led_level;
+
+    if (argc != 4) {
+        uart_puts("ex) ledset 1 1 1.\r\n");
+        return -1;
+    }
+
+	if (!xatoi(&argv[1], (long*)&col)) {
+        uart_puts("COL led number error.\r\n");
+		return -21;
+	}
+	if (!(1 <= col && col <= 5)) {
+        uart_puts("COL led number parameter error.\r\n");
+		return -22;
+	}
+	if (!xatoi(&argv[2], (long*)&row)) {
+        uart_puts("ROW led number error.\r\n");
+		return -31;
+	}
+	if (!(1 <= row && row <= 5)) {
+        uart_puts("ROW led number parameter error.\r\n");
+		return -32;
+	}
+	if (!xatoi(&argv[3], (long*)&led_level)) {
+        uart_puts("LED level parameter error.\r\n");
+		return -41;
+	}
+
+	if (!led_set((UB)row, (UB)col, (UB)led_level)) {
+        uart_puts("led_set() error.\r\n");
+		return -51;
+	}
 
 	return 0;
 }
