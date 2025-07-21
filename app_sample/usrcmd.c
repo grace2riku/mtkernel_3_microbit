@@ -66,6 +66,7 @@ static int usrcmd_ntopt_callback(int argc, char **argv, void *extobj);
 static int usrcmd_help(int argc, char **argv);
 static int usrcmd_info(int argc, char **argv);
 static int usrcmd_getLineSensorValue(int argc, char **argv);
+static int usrcmd_stream_line_sensor_data(int argc, char **argv);
 static int usrcmd_getButton(int argc, char **argv);
 static int usrcmd_driveMotor(int argc, char **argv);
 static int usrcmd_get_device_id(int argc, char **argv);
@@ -84,6 +85,7 @@ static const cmd_table_t cmdlist[] = {
     { "help", "This is a description text string for help command.", usrcmd_help },
     { "info", "This is a description text string for info command.", usrcmd_info },
     { "getls", "This command acquires the values of the left(P0), center(P1), and right(P2) line sensors.", usrcmd_getLineSensorValue },
+    { "getlsloop", "This command continues to acquire the values of the left (P0), center (P1), and right (P2) line sensors until button B is pressed.", usrcmd_stream_line_sensor_data },
     { "getbtn", "This command is used to obtain the press status of a button(A,B and LOGO).", usrcmd_getButton },
     { "drivemotor", "This command drives the motor.", usrcmd_driveMotor },
     { "getdevid", "This command is used to obtain the device ID.", usrcmd_get_device_id },
@@ -97,6 +99,7 @@ enum {
   COMMAND_HELP,
   COMMAND_INFO,
   COMMAND_GETLINESENSORVALUE,
+  COMMAND_GETLINESENSORVALUELOOP,
   COMMAND_GETBUTTON,
   COMMAND_DRIVEMOTOR,
   COMMAND_GETDEVID,
@@ -175,6 +178,33 @@ static int usrcmd_getLineSensorValue(int argc, char **argv) {
 	return 0;
 }
 
+static int usrcmd_stream_line_sensor_data(int argc, char **argv) {
+	_H adc_data[3];
+	UW interval_time = 1000;
+
+    if (argc == 2) {
+    	if (!xatoi(&argv[1], (long*)&interval_time)) {
+            uart_puts("Interval time parameter error.\r\n");
+    		return -21;
+    	}
+    }
+
+    uart_puts("left(P0), center(P1), right(P2)\r\n");
+
+    while (!isButtonBPressed()) {
+        // ch0=P0.02/AIN0(RING0==P0), ch1=P0.03/AIN1(RING1==P1), ch2=P0.04/AIN2(RING2==P2)でA/D変換
+    	analogRead3(adc_data);
+
+    	// A/D変換結果をコンソールに出力
+    	tm_printf("%d, %d, %d\n", adc_data[0], adc_data[1], adc_data[2]);
+
+    	tk_dly_tsk(interval_time);
+    }
+
+    uart_puts("Button-B pressed.Exit usrcmd_stream_line_sensor_data().\r\n");
+
+	return 0;
+}
 
 static int usrcmd_getButton(int argc, char **argv) {
 	tm_printf("Button_A: %s, Button_B: %s, Button_LOGO: %s\n\n",
