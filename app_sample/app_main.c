@@ -32,7 +32,7 @@ EXPORT INT usermain(void)
 	tk_sta_tsk(ntshell_tskid, 0);
 
 	cycid = tk_cre_cyc(&ccyc);	// 周期ハンドラの生成
-	tk_sta_cyc(cycid);			// 周期ハンドラSの動作開始
+	tk_sta_cyc(cycid);			// 周期ハンドラの動作開始
 
 	tk_slp_tsk(TMO_FEVR);
 

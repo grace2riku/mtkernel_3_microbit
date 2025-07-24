@@ -4,6 +4,8 @@
 #include "motor_drv.h"
 #include "Motor.h"
 
+#define DEFAULT_DUTY (30)	// デフォルトDuty比(%)
+static int mduty = DEFAULT_DUTY;
 
 void mt_init(void) {
 	pwm_init();
@@ -26,10 +28,10 @@ void mt_drvMotor(mt_direction_t direction) {
     	left_duty = right_duty = 0;
         break;
     case eFRONT:
-    	left_duty = right_duty = 30;
+    	left_duty = right_duty = mduty;
         break;
     case eBACK:
-    	left_duty = right_duty = -30;
+    	left_duty = right_duty = -mduty;
         break;
     default:
     	left_duty = right_duty = 0;
@@ -50,4 +52,12 @@ void mt_drvMotor(mt_direction_t direction) {
     }
 
 	motor_drive(left_duty, right_duty);
+}
+
+int get_duty(void) {
+	return mduty;
+}
+
+void set_duty(int duty) {
+	mduty = duty;
 }

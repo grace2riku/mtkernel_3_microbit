@@ -50,8 +50,6 @@ MEMO: size_t多重定義対応
 #include <tm/tmonitor.h>
 #define uart_puts tm_printf
 
-//#include "xprintf.h"	// xatoi
-
 #include "ad.h"
 #include "button.h"
 #include "motor_drv.h"
@@ -59,6 +57,7 @@ MEMO: size_t多重定義対応
 #include "acceleration_sensor.h"
 #include "temperature_sensor.h"
 #include "led.h"
+#include "Motor.h"
 
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
@@ -74,6 +73,8 @@ static int usrcmd_read_acceleration(int argc, char **argv);
 static int usrcmd_read_temp(int argc, char **argv);
 static int usrcmd_chk_btn_interrupt(int argc, char **argv);
 static int usrcmd_led_set(int argc, char **argv);
+static int usrcmd_get_duty(int argc, char **argv);
+static int usrcmd_set_duty(int argc, char **argv);
 
 typedef struct {
     const char* cmd;
@@ -93,6 +94,8 @@ static const cmd_table_t cmdlist[] = {
     { "readtemp", "This command reads the temperature.", usrcmd_read_temp },
     { "chkbtnint", "This command checks for button interruptions.", usrcmd_chk_btn_interrupt },
     { "ledset", "This command turns the LEDs on and off.", usrcmd_led_set },
+    { "getduty", "This command is used to get Duty.", usrcmd_get_duty },
+    { "setduty", "This command is used to set Duty.", usrcmd_set_duty },
 };
 
 enum {
@@ -107,6 +110,8 @@ enum {
   COMMAND_REATEMP,
   COMMAND_CHKBTNINT,
   COMMAND_LEDSET,
+  COMMAND_GETDUTY,
+  COMMAND_SETDUTY,
   COMMAND_MAX
 };
 
@@ -350,4 +355,32 @@ static int usrcmd_led_set(int argc, char **argv){
 	}
 
 	return 0;
+}
+
+static int usrcmd_get_duty(int argc, char **argv) {
+	tm_printf("duty = %d\n", get_duty());
+
+	return 0;
+}
+
+static int usrcmd_set_duty(int argc, char **argv) {
+	int duty;
+
+	if (argc != 2) {
+        uart_puts("ex) setduty 50\r\n");
+        return -1;
+    }
+
+	if (!xatoi(&argv[1], (long*)&duty)) {
+        uart_puts("duty error.\r\n");
+		return -11;
+	}
+	if (!(0 <= duty && duty <= 100)) {
+        uart_puts("Duty parameter error.\r\n");
+		return -12;
+	}
+
+	set_duty(duty);
+
+    return 0;
 }

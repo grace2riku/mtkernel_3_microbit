@@ -23,5 +23,7 @@ typedef struct {
 extern void mt_init(void);
 extern void mt_term(void);
 extern void mt_drvMotor(mt_direction_t);
+extern int get_duty(void);
+extern void set_duty(int duty);
 
 #endif /* MOTOR_H */
