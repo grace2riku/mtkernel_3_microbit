@@ -54,7 +54,7 @@ MEMO: size_t多重定義対応
 
 #include "ad.h"
 #include "button.h"
-#include "motor.h"
+#include "motor_drv.h"
 #include "device_id.h"
 #include "acceleration_sensor.h"
 #include "temperature_sensor.h"
