@@ -75,6 +75,26 @@ static int usrcmd_chk_btn_interrupt(int argc, char **argv);
 static int usrcmd_led_set(int argc, char **argv);
 static int usrcmd_get_duty(int argc, char **argv);
 static int usrcmd_set_duty(int argc, char **argv);
+static int usrcmd_memory_read(int argc, char **argv);
+
+static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
+"1byte * 16count read example) >mr b 0x1801e35d 16\n"
+"1801E35D  54 4F 50 50 45 52 53 2F 41 53 50 20 4B 65 72 6E  TOPPERS/ASP Kern\n"
+"\n"
+"2byte * 8count read example) >mr h 0x1801e35d 8\n"
+"1801E35D  4F54 5050 5245 2F53 5341 2050 654B 6E72\n"
+"\n"
+"4byte * 4count read example) >mr w 0x1801e35d 4\n"
+"1801E35D  50504F54 2F535245 20505341 6E72654B\n"
+"\n"
+"1byte read example) >mr b 0x1801e35d\n"
+"1801E35D  54  T\n"
+"\n"
+"2byte read example) >mr h 0x1801e35d\n"
+"1801E35D  4F54\n"
+"\n"
+"4byte read example) >mr w 0x1801e35d\n"
+"1801E35D  50504F54\n";
 
 typedef struct {
     const char* cmd;
@@ -96,6 +116,7 @@ static const cmd_table_t cmdlist[] = {
     { "ledset", "This command turns the LEDs on and off.", usrcmd_led_set },
     { "getduty", "This command is used to get Duty.", usrcmd_get_duty },
     { "setduty", "This command is used to set Duty.", usrcmd_set_duty },
+    { "mr", mr_cmd_example, usrcmd_memory_read },
 };
 
 enum {
@@ -112,6 +133,7 @@ enum {
   COMMAND_LEDSET,
   COMMAND_GETDUTY,
   COMMAND_SETDUTY,
+  COMMAND_MEMORYREAD,
   COMMAND_MAX
 };
 
@@ -383,4 +405,47 @@ static int usrcmd_set_duty(int argc, char **argv) {
 	set_duty(duty);
 
     return 0;
+}
+
+static int usrcmd_memory_read(int argc, char **argv){
+	long address;
+	long count = 1;
+	int read_size;
+	char *ptr;
+
+	if (argc < 3) {
+		uart_puts("mrb <[b|h|w]> <addr> [count]");
+    	return 0;
+    }
+
+    if (ntlibc_strcmp(argv[1], "b") == 0) {
+		read_size = 1;
+    }
+    else if (ntlibc_strcmp(argv[1], "h") == 0) {
+		read_size = 2;
+    }
+    else if (ntlibc_strcmp(argv[1], "w") == 0) {
+		read_size = 4;
+    } else {
+    	uart_puts("memory read size is [b|h|w].");
+    	return 0;
+    }
+
+	if (!xatoi(&argv[2], &address)) {
+		uart_puts("address error");
+		return 0;
+	}
+
+	if (argc == 4) {
+		if (!xatoi(&argv[3], &count)) {
+			uart_puts("count error");
+			return 0;
+		}
+    }
+
+	for (ptr = (char*)address; count >= 16 / read_size; ptr += 16, count -= 16 / read_size)
+		put_dump(ptr, (UW)ptr, 16 / read_size, read_size);
+	if (count) put_dump((char*)ptr, (UINT)ptr, count, read_size);
+
+	return 0;
 }
