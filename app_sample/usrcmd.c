@@ -59,6 +59,7 @@ MEMO: size_t多重定義対応
 #include "led.h"
 #include "Motor.h"
 #include "Trace.h"
+#include "speaker.h"
 
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
@@ -79,6 +80,7 @@ static int usrcmd_set_duty(int argc, char **argv);
 static int usrcmd_memory_read(int argc, char **argv);
 static int usrcmd_tr_run(int argc, char **argv);
 static int usrcmd_tr_stop(int argc, char **argv);
+static int usrcmd_play_speaker(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -122,6 +124,7 @@ static const cmd_table_t cmdlist[] = {
     { "mr", mr_cmd_example, usrcmd_memory_read },
     { "trrun", "Line tracing.", usrcmd_tr_run },
     { "trstop", "Stop line tracing.", usrcmd_tr_stop },
+    { "speaker", "The specified frequency is sounded from the speaker for the specified time.", usrcmd_play_speaker },
 };
 
 enum {
@@ -141,6 +144,7 @@ enum {
   COMMAND_MEMORYREAD,
   COMMAND_LINETRACERUN,
   COMMAND_LINETRACESTOP,
+  COMMAND_PLAYSPEAKER,
   COMMAND_MAX
 };
 
@@ -464,5 +468,28 @@ static int usrcmd_tr_run(int argc, char **argv) {
 
 static int usrcmd_tr_stop(int argc, char **argv) {
 	tr_stop();
+	return 0;
+}
+
+static int usrcmd_play_speaker(int argc, char **argv) {
+	INT f, play_time;
+
+	if (argc != 3) {
+        uart_puts("ex) speaker 523 500\r\n");
+        return -1;
+    }
+
+	if (!xatoi(&argv[1], (long*)&f)) {
+        uart_puts("frequency error.\r\n");
+		return -11;
+	}
+
+	if (!xatoi(&argv[2], (long*)&play_time)) {
+        uart_puts("Play time error.\r\n");
+		return -21;
+	}
+
+	play_speaker(f, play_time);
+
 	return 0;
 }

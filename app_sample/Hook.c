@@ -7,6 +7,7 @@
 #include "pwm.h"
 #include "acceleration_sensor.h"
 #include "led.h"
+#include "speaker.h"
 
 void device_initialize(void) {
     sc_init();
@@ -14,6 +15,7 @@ void device_initialize(void) {
 	button_init();
 	acceleration_sensor_init();
 	led_init();
+	speaker_init();
 
     return;
 }
