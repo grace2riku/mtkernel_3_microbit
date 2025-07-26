@@ -58,6 +58,7 @@ MEMO: size_t多重定義対応
 #include "temperature_sensor.h"
 #include "led.h"
 #include "Motor.h"
+#include "Trace.h"
 
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
@@ -76,6 +77,8 @@ static int usrcmd_led_set(int argc, char **argv);
 static int usrcmd_get_duty(int argc, char **argv);
 static int usrcmd_set_duty(int argc, char **argv);
 static int usrcmd_memory_read(int argc, char **argv);
+static int usrcmd_tr_run(int argc, char **argv);
+static int usrcmd_tr_stop(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -117,6 +120,8 @@ static const cmd_table_t cmdlist[] = {
     { "getduty", "This command is used to get Duty.", usrcmd_get_duty },
     { "setduty", "This command is used to set Duty.", usrcmd_set_duty },
     { "mr", mr_cmd_example, usrcmd_memory_read },
+    { "trrun", "Line tracing.", usrcmd_tr_run },
+    { "trstop", "Stop line tracing.", usrcmd_tr_stop },
 };
 
 enum {
@@ -134,6 +139,8 @@ enum {
   COMMAND_GETDUTY,
   COMMAND_SETDUTY,
   COMMAND_MEMORYREAD,
+  COMMAND_LINETRACERUN,
+  COMMAND_LINETRACESTOP,
   COMMAND_MAX
 };
 
@@ -447,5 +454,15 @@ static int usrcmd_memory_read(int argc, char **argv){
 		put_dump(ptr, (UW)ptr, 16 / read_size, read_size);
 	if (count) put_dump((char*)ptr, (UINT)ptr, count, read_size);
 
+	return 0;
+}
+
+static int usrcmd_tr_run(int argc, char **argv) {
+	tr_runnable();
+	return 0;
+}
+
+static int usrcmd_tr_stop(int argc, char **argv) {
+	tr_stop();
 	return 0;
 }
