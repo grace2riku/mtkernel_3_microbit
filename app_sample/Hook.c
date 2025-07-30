@@ -8,6 +8,7 @@
 #include "acceleration_sensor.h"
 #include "led.h"
 #include "speaker.h"
+#include "log.h"
 
 void device_initialize(void) {
     sc_init();
@@ -16,6 +17,9 @@ void device_initialize(void) {
 	acceleration_sensor_init();
 	led_init();
 	speaker_init();
+
+	/* xprintfシリアル送信関数登録 */
+	update_xprintf_route();
 
     return;
 }

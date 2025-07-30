@@ -65,6 +65,8 @@ MEMO: size_t多重定義対応
 #include "Drive.h"
 #include "Navi.h"
 
+#include "log.h"
+
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
 static int usrcmd_ntopt_callback(int argc, char **argv, void *extobj);
@@ -87,6 +89,8 @@ static int usrcmd_tr_stop(int argc, char **argv);
 static int usrcmd_play_speaker(int argc, char **argv);
 static int usrcmd_set_frdir(int argc, char **argv);
 static int usrcmd_get_frdir(int argc, char **argv);
+static int usrcmd_log_on(int argc, char **argv);
+static int usrcmd_log_off(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -133,6 +137,8 @@ static const cmd_table_t cmdlist[] = {
     { "speaker", "The specified frequency is sounded from the speaker for the specified time.", usrcmd_play_speaker },
     { "setfrdir", "This command sets the forward/backward direction of movement.", usrcmd_set_frdir },
     { "getfrdir", "This command gets the forward/backward direction of movement.", usrcmd_get_frdir },
+    { "logon", "This command turns on logging.", usrcmd_log_on },
+    { "logoff", "This command turns off logging.", usrcmd_log_off },
 };
 
 enum {
@@ -155,6 +161,8 @@ enum {
   COMMAND_PLAYSPEAKER,
   COMMAND_SETFRDIR,
   COMMAND_GETFRDIR,
+  COMMAND_LOGON,
+  COMMAND_LOGOFF,
   COMMAND_MAX
 };
 
@@ -531,6 +539,20 @@ static int usrcmd_get_frdir(int argc, char **argv) {
 	} else {
 		tm_printf("Movement is backward direction.\n");
 	}
+
+	return 0;
+}
+
+static int usrcmd_log_on(int argc, char **argv) {
+	set_eneble_log(1);
+	update_xprintf_route();
+
+	return 0;
+}
+
+static int usrcmd_log_off(int argc, char **argv) {
+	set_eneble_log(0);
+	update_xprintf_route();
 
 	return 0;
 }

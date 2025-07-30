@@ -1,19 +1,12 @@
-#define PROHIBIT_DEF_SIZE_T
-#include "xprintf.h"	// xatoi
-
 #include <tk/tkernel.h>
 #include <tm/tmonitor.h>
 #include "Hook.h"
 #include "SysCtrl.h"
-#include "button.h"
-#include "pwm.h"
-#include "acceleration_sensor.h"
-#include "led.h"
 
 LOCAL void trace_task(void);
 // 周期ハンドラの関連情報
 const T_CCYC ccyc = {0, TA_HLNG, &trace_task, 1, 0};
-ID cycid;							// 周期ハンドラSのID
+ID cycid; // 周期ハンドラのID
 
 /* usermain関数 */
 EXPORT INT usermain(void)
@@ -23,9 +16,6 @@ EXPORT INT usermain(void)
 	tm_putstring((UB*)"Start User-main program.\n");
 
 	device_initialize();
-
-	/* xprintfシリアル送信関数登録 */
-	xdev_out(tm_putchar);
 
 	IMPORT T_CTSK* get_ntshell_task_ctsk_addr();
 	ntshell_tskid = tk_cre_tsk(get_ntshell_task_ctsk_addr());

@@ -1,8 +1,15 @@
+#define PROHIBIT_DEF_SIZE_T
+#include "xprintf.h"
+#include <tk/tkernel.h>
+#include <tm/tmonitor.h>
+#include "acceleration_sensor.h"
+
 #include "Course.h"
 #include "Drive.h"
 #include "Navi.h"
 
 #include "Trace.h"
+
 
 typedef enum {
     eStop,			/* 停止中 */
@@ -89,6 +96,10 @@ void tr_stop(void) {
 static void tr_traceCource(void) {
     diffCourse_t        diff;   /* コースとのズレ */
     directionVector_t   drct;   /* 進行方向 */
+	int x, y, z;
+
+	acceleration_sensor_read(&x, &y, &z);
+	xprintf("Acc: x,y,z=%4d,%4d,%4d\n", x, y, z);
 
     diff = cs_detectDifference();   /* ズレを検出する */
     drct = nv_naviCourse(diff);     /* 進行方向を決める */
