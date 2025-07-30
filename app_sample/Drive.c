@@ -51,7 +51,10 @@ static FrontBack_t dr_cvtFrontBack(directForward_t forward) {
         break;
     case eMoveForward:
         front_back = eFRONT;
-        break;    
+        break;
+    case eMoveBackward:
+    	front_back = eBACK;
+    	break;
     default:
         /* 停止させる */
         front_back = eSTOP;

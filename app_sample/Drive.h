@@ -5,6 +5,7 @@
 typedef enum {
     eStopForward,   /* その場 */
     eMoveForward,   /* 前方向 */
+	eMoveBackward,	/* 後方向 */
 } directForward_t;
 
 /* 左右方向 */

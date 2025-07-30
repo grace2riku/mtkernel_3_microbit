@@ -3,6 +3,8 @@
 
 #include "Navi.h"
 
+static int movefrontback_dir = 0;	/* 0:前進/1:後進 */
+
 void nv_init(void) {
 
     return;
@@ -14,13 +16,23 @@ void nv_term(void) {
     return;
 }
 
+void set_movefrontback_dir(int dir) {
+	movefrontback_dir = dir;
+}
+
+int get_movefrontback_dir(void) {
+	return movefrontback_dir;
+}
 
 directionVector_t nv_naviCourse(diffCourse_t diff) {
     directionVector_t   navi;
 
-    /* 前後方向は常に「前進」 */
-    navi.forward = eMoveForward;
-
+    /* 前後方向のデフォルトは「前進」 */
+    if (!movefrontback_dir) {
+    	navi.forward = eMoveForward;
+    } else {
+    	navi.forward = eMoveBackward;
+    }
     /* 左右のブレの補正 */
     switch (diff) {
     case eNoDiff:

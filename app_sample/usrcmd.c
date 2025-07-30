@@ -61,6 +61,10 @@ MEMO: size_t多重定義対応
 #include "Trace.h"
 #include "speaker.h"
 
+#include "Course.h"
+#include "Drive.h"
+#include "Navi.h"
+
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
 static int usrcmd_ntopt_callback(int argc, char **argv, void *extobj);
@@ -81,6 +85,8 @@ static int usrcmd_memory_read(int argc, char **argv);
 static int usrcmd_tr_run(int argc, char **argv);
 static int usrcmd_tr_stop(int argc, char **argv);
 static int usrcmd_play_speaker(int argc, char **argv);
+static int usrcmd_set_frdir(int argc, char **argv);
+static int usrcmd_get_frdir(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -125,6 +131,8 @@ static const cmd_table_t cmdlist[] = {
     { "trrun", "Line tracing.", usrcmd_tr_run },
     { "trstop", "Stop line tracing.", usrcmd_tr_stop },
     { "speaker", "The specified frequency is sounded from the speaker for the specified time.", usrcmd_play_speaker },
+    { "setfrdir", "This command sets the forward/backward direction of movement.", usrcmd_set_frdir },
+    { "getfrdir", "This command gets the forward/backward direction of movement.", usrcmd_get_frdir },
 };
 
 enum {
@@ -145,6 +153,8 @@ enum {
   COMMAND_LINETRACERUN,
   COMMAND_LINETRACESTOP,
   COMMAND_PLAYSPEAKER,
+  COMMAND_SETFRDIR,
+  COMMAND_GETFRDIR,
   COMMAND_MAX
 };
 
@@ -490,6 +500,37 @@ static int usrcmd_play_speaker(int argc, char **argv) {
 	}
 
 	play_speaker(f, play_time);
+
+	return 0;
+}
+
+static int usrcmd_set_frdir(int argc, char **argv) {
+	int dir = 0;
+
+	if (argc != 2) {
+        uart_puts("ex) setfrdir 0\r\n");
+        uart_puts("ex) setfrdir 1\r\n");
+        return -1;
+    }
+
+	if (!xatoi(&argv[1], (long*)&dir)) {
+        uart_puts("dir error.\r\n");
+		return -11;
+	}
+
+	set_movefrontback_dir(dir);
+
+	return 0;
+}
+
+static int usrcmd_get_frdir(int argc, char **argv) {
+	int dir = get_movefrontback_dir();
+
+	if (!dir) {
+		tm_printf("Movement is forward direction.\n");
+	} else {
+		tm_printf("Movement is backward direction.\n");
+	}
 
 	return 0;
 }
