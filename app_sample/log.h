@@ -12,4 +12,7 @@ void set_eneble_log(BOOL flg);
 BOOL get_enable_log(void);
 void update_xprintf_route(void);
 
+extern void set_acc_sensor_read_timing(unsigned short timing);
+extern unsigned short get_acc_sensor_read_timing(void);
+
 #endif /* LOG_H */

@@ -2,6 +2,7 @@
 #include <tm/tmonitor.h>
 #include "Hook.h"
 #include "SysCtrl.h"
+#include "log.h"
 
 LOCAL void trace_task(void);
 // 周期ハンドラの関連情報
@@ -12,6 +13,7 @@ ID cycid; // 周期ハンドラのID
 EXPORT INT usermain(void)
 {
 	ID ntshell_tskid; // Task ID number
+	ID log_tskid;
 
 	tm_putstring((UB*)"Start User-main program.\n");
 
@@ -20,6 +22,10 @@ EXPORT INT usermain(void)
 	IMPORT T_CTSK* get_ntshell_task_ctsk_addr();
 	ntshell_tskid = tk_cre_tsk(get_ntshell_task_ctsk_addr());
 	tk_sta_tsk(ntshell_tskid, 0);
+
+	IMPORT T_CTSK* get_log_task_ctsk_addr();
+	log_tskid = tk_cre_tsk(get_log_task_ctsk_addr());
+	tk_sta_tsk(log_tskid, 0);
 
 	cycid = tk_cre_cyc(&ccyc);	// 周期ハンドラの生成
 	tk_sta_cyc(cycid);			// 周期ハンドラの動作開始

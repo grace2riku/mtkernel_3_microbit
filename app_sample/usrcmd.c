@@ -91,6 +91,8 @@ static int usrcmd_set_frdir(int argc, char **argv);
 static int usrcmd_get_frdir(int argc, char **argv);
 static int usrcmd_log_on(int argc, char **argv);
 static int usrcmd_log_off(int argc, char **argv);
+static int usrcmd_set_acc_read_time(int argc, char **argv);
+static int usrcmd_get_acc_read_time(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -139,6 +141,8 @@ static const cmd_table_t cmdlist[] = {
     { "getfrdir", "This command gets the forward/backward direction of movement.", usrcmd_get_frdir },
     { "logon", "This command turns on logging.", usrcmd_log_on },
     { "logoff", "This command turns off logging.", usrcmd_log_off },
+    { "setaccreadtime", "Sets the ACC sensor read timing.", usrcmd_set_acc_read_time },
+    { "getaccreadtime", "Gets the ACC sensor read timing.", usrcmd_get_acc_read_time },
 };
 
 enum {
@@ -163,6 +167,8 @@ enum {
   COMMAND_GETFRDIR,
   COMMAND_LOGON,
   COMMAND_LOGOFF,
+  COMMAND_SETACCREADTIME,
+  COMMAND_GETACCREADTIME,
   COMMAND_MAX
 };
 
@@ -555,4 +561,29 @@ static int usrcmd_log_off(int argc, char **argv) {
 	update_xprintf_route();
 
 	return 0;
+}
+
+static int usrcmd_set_acc_read_time(int argc, char **argv) {
+	UH timing;
+
+	if (argc != 2) {
+        uart_puts("ex 1: 20ms(10ms * 2) setaccreadtime 2\r\n");
+        uart_puts("ex 2: 100ms(10ms * 10) setaccreadtime 10\r\n");
+        return -1;
+    }
+
+	if (!xatoi(&argv[1], (long*)&timing)) {
+        uart_puts("Timing error.\r\n");
+		return -11;
+	}
+
+	set_acc_sensor_read_timing(timing);
+
+	return 0;
+}
+
+static int usrcmd_get_acc_read_time(int argc, char **argv) {
+    tm_printf("acc_read_time = %d\n\n", get_acc_sensor_read_timing());
+
+    return 0;
 }

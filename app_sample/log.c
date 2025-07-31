@@ -10,9 +10,13 @@
 #include <tk/tkernel.h>
 #include <tm/tmonitor.h>
 
+#include "acceleration_sensor.h"
+
+static UH acc_sensor_read_timing = 100;
+
 static void null_putc(int c)      { (void)c; }             /* 送信なし */
 
-static BOOL enable_log = 1;  /* 0:OFF, 1:ON */
+static BOOL enable_log = 0;  /* 0:OFF, 1:ON */
 
 void set_eneble_log(BOOL flg) {
 	enable_log = flg;
@@ -30,4 +34,40 @@ void update_xprintf_route(void) {
 	} else {
 		xdev_out(null_putc);
 	}
+}
+
+LOCAL void log_task(INT stacd, void *exinf);	// task execution function
+LOCAL T_CTSK log_task_ctsk = {				// Task creation information
+	.itskpri	= 10,
+	.stksz		= 1024,
+	.task		= log_task,
+	.tskatr		= TA_HLNG | TA_RNG3,
+};
+
+
+EXPORT T_CTSK* get_log_task_ctsk_addr()
+{
+	return &log_task_ctsk;
+}
+
+
+LOCAL void log_task(INT stacd, void *exinf)
+{
+	int x, y, z = 0;
+
+	while(1) {
+		tk_dly_tsk(acc_sensor_read_timing);
+
+		// 加速度センサーの取得
+		acceleration_sensor_read(&x, &y, &z);
+		xprintf("Acc: x,y,z=%4d,%4d,%4d\n", x, y, z);
+	}
+}
+
+void set_acc_sensor_read_timing(unsigned short timing) {
+	acc_sensor_read_timing = timing;
+}
+
+unsigned short get_acc_sensor_read_timing(void) {
+	return acc_sensor_read_timing;
 }
