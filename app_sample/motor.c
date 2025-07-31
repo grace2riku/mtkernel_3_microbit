@@ -7,6 +7,8 @@
 #define DEFAULT_DUTY (30)	// デフォルトDuty比(%)
 static int mduty = DEFAULT_DUTY;
 
+static int now_duty[2];
+
 void mt_init(void) {
 	pwm_init();
 
@@ -51,6 +53,9 @@ void mt_drvMotor(mt_direction_t direction) {
         break;
     }
 
+    now_duty[0] = left_duty;
+    now_duty[1] = right_duty;
+
 	motor_drive(left_duty, right_duty);
 }
 
@@ -60,4 +65,9 @@ int get_duty(void) {
 
 void set_duty(int duty) {
 	mduty = duty;
+}
+
+void get_now_duty(int* duty) {
+	duty[0] = now_duty[0];
+	duty[1] = now_duty[1];
 }

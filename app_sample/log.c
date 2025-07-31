@@ -11,6 +11,7 @@
 #include <tm/tmonitor.h>
 
 #include "acceleration_sensor.h"
+#include "Motor.h"
 
 static UH acc_sensor_read_timing = 100;
 
@@ -54,13 +55,19 @@ EXPORT T_CTSK* get_log_task_ctsk_addr()
 LOCAL void log_task(INT stacd, void *exinf)
 {
 	int x, y, z = 0;
+	int duty[2];
 
 	while(1) {
 		tk_dly_tsk(acc_sensor_read_timing);
 
 		// 加速度センサーの取得
 		acceleration_sensor_read(&x, &y, &z);
-		xprintf("Acc: x,y,z=%4d,%4d,%4d\n", x, y, z);
+
+		// 現在のdutyを取得
+		get_now_duty(duty);
+
+		xprintf("Acc: x,y,z=%4d,%4d,%4d/Duty: left,right=%d,%d \n",
+				x, y, z, duty[0], duty[1]);
 	}
 }
 
