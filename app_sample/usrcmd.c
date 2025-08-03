@@ -66,6 +66,7 @@ MEMO: size_t多重定義対応
 #include "Navi.h"
 
 #include "log.h"
+#include "reinforcement_learning.h"
 
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
@@ -93,6 +94,7 @@ static int usrcmd_log_on(int argc, char **argv);
 static int usrcmd_log_off(int argc, char **argv);
 static int usrcmd_set_acc_read_time(int argc, char **argv);
 static int usrcmd_get_acc_read_time(int argc, char **argv);
+static int usrcmd_rl_get_state(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -112,6 +114,13 @@ static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "\n"
 "4byte read example) >mr w 0x1801e35d\n"
 "1801E35D  50504F54\n";
+
+static const char* const rllineStateMsg[] = {
+    "State 0: The line is in the center.\n",
+    "State 1: The line is on the right.\n",
+    "State 2: The line is on the left.\n",
+    "State 3: Anything else.\n"
+};
 
 typedef struct {
     const char* cmd;
@@ -143,6 +152,7 @@ static const cmd_table_t cmdlist[] = {
     { "logoff", "This command turns off logging.", usrcmd_log_off },
     { "setaccreadtime", "Sets the ACC sensor read timing.", usrcmd_set_acc_read_time },
     { "getaccreadtime", "Gets the ACC sensor read timing.", usrcmd_get_acc_read_time },
+    { "rlgetstate", "Let's check the line sensor state acquisition function used in reinforcement learning.", usrcmd_rl_get_state },
 };
 
 enum {
@@ -169,6 +179,7 @@ enum {
   COMMAND_LOGOFF,
   COMMAND_SETACCREADTIME,
   COMMAND_GETACCREADTIME,
+  COMMAND_RLGETSTATE,
   COMMAND_MAX
 };
 
@@ -586,4 +597,12 @@ static int usrcmd_get_acc_read_time(int argc, char **argv) {
     tm_printf("acc_read_time = %d\n\n", get_acc_sensor_read_timing());
 
     return 0;
+}
+
+static int usrcmd_rl_get_state(int argc, char **argv) {
+	int state = rl_get_state();
+
+	tm_printf(rllineStateMsg[state]);
+
+	return 0;
 }
