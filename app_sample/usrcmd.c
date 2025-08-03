@@ -95,6 +95,7 @@ static int usrcmd_log_off(int argc, char **argv);
 static int usrcmd_set_acc_read_time(int argc, char **argv);
 static int usrcmd_get_acc_read_time(int argc, char **argv);
 static int usrcmd_rl_get_state(int argc, char **argv);
+static int usrcmd_rl_get_reward(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -153,6 +154,7 @@ static const cmd_table_t cmdlist[] = {
     { "setaccreadtime", "Sets the ACC sensor read timing.", usrcmd_set_acc_read_time },
     { "getaccreadtime", "Gets the ACC sensor read timing.", usrcmd_get_acc_read_time },
     { "rlgetstate", "Let's check the line sensor state acquisition function used in reinforcement learning.", usrcmd_rl_get_state },
+    { "rlgetrwd", "This command gets the reinforcement learning reward.", usrcmd_rl_get_reward },
 };
 
 enum {
@@ -180,6 +182,7 @@ enum {
   COMMAND_SETACCREADTIME,
   COMMAND_GETACCREADTIME,
   COMMAND_RLGETSTATE,
+  COMMAND_RLGETREWARD,
   COMMAND_MAX
 };
 
@@ -603,6 +606,14 @@ static int usrcmd_rl_get_state(int argc, char **argv) {
 	int state = rl_get_state();
 
 	tm_printf(rllineStateMsg[state]);
+
+	return 0;
+}
+
+static int usrcmd_rl_get_reward(int argc, char **argv) {
+	int reward = rl_get_reward();
+
+	tm_printf("The reinforcement learning reward is %d.\n", reward);
 
 	return 0;
 }

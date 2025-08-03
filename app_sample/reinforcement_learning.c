@@ -30,3 +30,20 @@ int rl_get_state(void) {
 
 	return state;
 }
+
+
+int rl_get_reward(void) {
+	int reword = 0;
+	_H adc_data[3];
+
+    // adc_data[0] == P0(左側), adc_data[1] == P1(中央), adc_data[2] == P2(右側)
+	analogRead3(adc_data);
+
+	if (adc_data[2] > BLACK_THRESHORD) {
+		reword = -100;	// 右のセンサーが反応
+	} else if (adc_data[1] > BLACK_THRESHORD){
+		reword = 1;	// 中央のセンサーが反応
+	}
+
+	return reword;
+}

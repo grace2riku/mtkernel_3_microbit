@@ -9,5 +9,6 @@
 #define REINFORCEMENT_LEARNING_H
 
 extern int rl_get_state(void);
+extern int rl_get_reward(void);
 
 #endif /* REINFORCEMENT_LEARNING_H */
