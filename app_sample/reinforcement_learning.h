@@ -10,5 +10,6 @@
 
 extern int rl_get_state(void);
 extern int rl_get_reward(void);
+extern void rl_move(int action);
 
 #endif /* REINFORCEMENT_LEARNING_H */

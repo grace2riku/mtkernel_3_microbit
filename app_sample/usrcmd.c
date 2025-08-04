@@ -96,6 +96,7 @@ static int usrcmd_set_acc_read_time(int argc, char **argv);
 static int usrcmd_get_acc_read_time(int argc, char **argv);
 static int usrcmd_rl_get_state(int argc, char **argv);
 static int usrcmd_rl_get_reward(int argc, char **argv);
+static int usrcmd_rl_move(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -155,6 +156,7 @@ static const cmd_table_t cmdlist[] = {
     { "getaccreadtime", "Gets the ACC sensor read timing.", usrcmd_get_acc_read_time },
     { "rlgetstate", "Let's check the line sensor state acquisition function used in reinforcement learning.", usrcmd_rl_get_state },
     { "rlgetrwd", "This command gets the reinforcement learning reward.", usrcmd_rl_get_reward },
+    { "rlmove", "This command checks the reinforcement learning action.", usrcmd_rl_move },
 };
 
 enum {
@@ -183,6 +185,7 @@ enum {
   COMMAND_GETACCREADTIME,
   COMMAND_RLGETSTATE,
   COMMAND_RLGETREWARD,
+  COMMAND_RLMOVE,
   COMMAND_MAX
 };
 
@@ -614,6 +617,22 @@ static int usrcmd_rl_get_reward(int argc, char **argv) {
 	int reward = rl_get_reward();
 
 	tm_printf("The reinforcement learning reward is %d.\n", reward);
+
+	return 0;
+}
+
+
+static int usrcmd_rl_move(int argc, char **argv) {
+	rl_move(0);	// 前進
+	tk_dly_tsk(1000);
+
+	rl_move(1);	// 右旋回
+	tk_dly_tsk(1000);
+
+	rl_move(2);	// 左旋回
+	tk_dly_tsk(1000);
+
+	motor_stop();
 
 	return 0;
 }

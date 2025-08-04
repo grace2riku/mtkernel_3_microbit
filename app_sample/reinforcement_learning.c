@@ -12,6 +12,7 @@
 
 #include "ad.h"
 #include "Sensor.h"
+#include "motor_drv.h"
 
 int rl_get_state(void) {
 	int state = 3;
@@ -22,7 +23,7 @@ int rl_get_state(void) {
 
 	if (adc_data[2] > BLACK_THRESHORD) {
 		state = 1;	// 右のセンサーが反応
-	} else if (adc_data[0] > BLACK_THRESHORD) {
+	} else if (adc_data[0] > GRAY_THRESHORD) {
 		state = 2;	// 左のセンサーが反応
 	} else if (adc_data[1] > BLACK_THRESHORD){
 		state = 0;	// 中央のセンサーが反応
@@ -39,11 +40,27 @@ int rl_get_reward(void) {
     // adc_data[0] == P0(左側), adc_data[1] == P1(中央), adc_data[2] == P2(右側)
 	analogRead3(adc_data);
 
-	if (adc_data[2] > BLACK_THRESHORD) {
-		reword = -100;	// 右のセンサーが反応
+	if (adc_data[0] > GRAY_THRESHORD || adc_data[2] > BLACK_THRESHORD) {
+		reword = 0;	// 左または右のセンサーが反応
 	} else if (adc_data[1] > BLACK_THRESHORD){
 		reword = 1;	// 中央のセンサーが反応
+	} else {
+		reword = -100;
 	}
 
 	return reword;
+}
+
+
+void rl_move(int action) {
+	if (action == 0) {
+		// 前進
+		motor_drive(30, 30);
+	} else if (action == 1) {
+		// 右旋回
+		motor_drive(0, 30);
+	} else {
+		// 右旋回
+		motor_drive(30, 0);
+	}
 }
