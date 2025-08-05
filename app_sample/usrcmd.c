@@ -571,14 +571,12 @@ static int usrcmd_get_frdir(int argc, char **argv) {
 
 static int usrcmd_log_on(int argc, char **argv) {
 	set_eneble_log(1);
-	update_xprintf_route();
 
 	return 0;
 }
 
 static int usrcmd_log_off(int argc, char **argv) {
 	set_eneble_log(0);
-	update_xprintf_route();
 
 	return 0;
 }

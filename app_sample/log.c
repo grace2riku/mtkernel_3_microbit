@@ -17,19 +17,20 @@ static UH acc_sensor_read_timing = 100;
 
 static void null_putc(int c)      { (void)c; }             /* 送信なし */
 
-static BOOL enable_log = 1;  /* 0:OFF, 1:ON */
+static BOOL enable_xprintf_log = 1;  /* xprintf 0:OFF, 1:ON */
+static BOOL enable_readacc_log = 0;  /* 加速度センサ値取得 0:OFF, 1:ON */
 
 void set_eneble_log(BOOL flg) {
-	enable_log = flg;
+	enable_readacc_log = flg;
 }
 
 BOOL get_enable_log(void) {
-	return enable_log;
+	return enable_readacc_log;
 }
 
 /* どこか一か所で呼び出す */
 void update_xprintf_route(void) {
-	if (enable_log) {
+	if (enable_xprintf_log) {
 		/* xprintfシリアル送信関数登録 */
 		xdev_out(tm_putchar);
 	} else {
@@ -60,14 +61,15 @@ LOCAL void log_task(INT stacd, void *exinf)
 	while(1) {
 		tk_dly_tsk(acc_sensor_read_timing);
 
-		// 加速度センサーの取得
-		acceleration_sensor_read(&x, &y, &z);
+		if (enable_readacc_log) {
+			// 加速度センサーの取得
+			acceleration_sensor_read(&x, &y, &z);
 
-		// 現在のdutyを取得
-		get_now_duty(duty);
+			// 現在のdutyを取得
+			get_now_duty(duty);
 
-		xprintf("Acc: x,y,z=%4d,%4d,%4d/Duty: left,right=%d,%d \n",
-				x, y, z, duty[0], duty[1]);
+			tm_printf("Acc: x,y,z=%4d,%4d,%4d/Duty: left,right=%d,%d \n", x, y, z, duty[0], duty[1]);
+		}
 	}
 }
 
