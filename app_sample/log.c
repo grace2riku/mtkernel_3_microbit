@@ -17,7 +17,7 @@ static UH acc_sensor_read_timing = 100;
 
 static void null_putc(int c)      { (void)c; }             /* 送信なし */
 
-static BOOL enable_log = 0;  /* 0:OFF, 1:ON */
+static BOOL enable_log = 1;  /* 0:OFF, 1:ON */
 
 void set_eneble_log(BOOL flg) {
 	enable_log = flg;

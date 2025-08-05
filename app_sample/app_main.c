@@ -23,9 +23,9 @@ EXPORT INT usermain(void)
 	ntshell_tskid = tk_cre_tsk(get_ntshell_task_ctsk_addr());
 	tk_sta_tsk(ntshell_tskid, 0);
 
-	IMPORT T_CTSK* get_log_task_ctsk_addr();
-	log_tskid = tk_cre_tsk(get_log_task_ctsk_addr());
-	tk_sta_tsk(log_tskid, 0);
+//	IMPORT T_CTSK* get_log_task_ctsk_addr();
+//	log_tskid = tk_cre_tsk(get_log_task_ctsk_addr());
+//	tk_sta_tsk(log_tskid, 0);
 
 	cycid = tk_cre_cyc(&ccyc);	// 周期ハンドラの生成
 	tk_sta_cyc(cycid);			// 周期ハンドラの動作開始

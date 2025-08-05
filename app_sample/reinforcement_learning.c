@@ -10,9 +10,15 @@
 #include <tk/tkernel.h>
 #include <tm/tmonitor.h>
 
+#include "reinforcement_learning.h"
 #include "ad.h"
 #include "Sensor.h"
 #include "motor_drv.h"
+
+// Qtable
+// 1次元目: 状態の数
+// 2次元目: 行動の数
+static float mQtable[1][5];
 
 int rl_get_state(void) {
 	int state = 3;
@@ -63,4 +69,29 @@ void rl_move(int action) {
 		// 右旋回
 		motor_drive(30, 0);
 	}
+}
+
+void rl_init_Qtable(void) {
+	mQtable[0][0] = 1.0;
+	mQtable[0][1] = 3.0;
+	mQtable[0][2] = 2.0;
+	mQtable[0][3] = 5.0;
+	mQtable[0][4] = 1.0;
+}
+
+float rl_max_Qval(int state, int num_actions, QtablePtr Qtable) {
+	float max;
+	int i = 0;
+
+	max = Qtable[state][0];
+	for (i = 1; i < num_actions; i++) {
+		if (Qtable[state][i] > max) {
+			max = Qtable[state][i];
+		}
+	}
+	return max;
+}
+
+QtablePtr rl_get_Qtable_address(void) {
+	return mQtable;
 }
