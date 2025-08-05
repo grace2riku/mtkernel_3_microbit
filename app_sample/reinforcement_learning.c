@@ -95,3 +95,23 @@ float rl_max_Qval(int state, int num_actions, QtablePtr Qtable) {
 QtablePtr rl_get_Qtable_address(void) {
 	return mQtable;
 }
+
+
+int rl_select_action(int state, int num_actions, QtablePtr Qtable) {
+	float max;
+	int i = 0;
+	int i_max;
+	int action;
+
+	max = Qtable[state][0];
+	i_max = 0;
+
+	for (i = 1; i < num_actions; i++) {
+		if (Qtable[state][i] > max) {
+			max = Qtable[state][i];
+			i_max = i;
+		}
+	}
+	action = i_max;
+	return action;
+}

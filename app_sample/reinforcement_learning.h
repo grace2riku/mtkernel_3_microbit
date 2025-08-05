@@ -19,5 +19,6 @@ extern void rl_move(int action);
 extern void rl_init_Qtable(void);
 extern float rl_max_Qval(int state, int num_actions, QtablePtr Qtable);
 extern QtablePtr rl_get_Qtable_address(void);
+extern int rl_select_action(int state, int num_actions, QtablePtr Qtable);
 
 #endif /* REINFORCEMENT_LEARNING_H */
