@@ -7,6 +7,7 @@
 #define PROHIBIT_DEF_SIZE_T
 #include "xprintf.h"
 
+#include <stdlib.h>	// srand, rand
 #include <tk/tkernel.h>
 #include <tm/tmonitor.h>
 
@@ -113,5 +114,33 @@ int rl_select_action(int state, int num_actions, QtablePtr Qtable) {
 		}
 	}
 	action = i_max;
+	return action;
+}
+
+
+void rl_init_epsilon_greedy(void) {
+	SYSTIM	tim;
+	tk_get_tim(&tim);		/* 現在時刻を取得 */
+
+	tm_printf("rl_init_epsilon_greedy() seed(tk_get_tim() output parameter SYSTIM Lower 32bit)= %d\n", tim.lo);
+
+	srand(tim.lo);
+}
+
+
+int rl_epsilon_greedy(int epsilon, int state, int num_action, QtablePtr Qtable) {
+	int action;
+
+	if (epsilon > rand() % 100) {
+		// 無作為に行動を選択する
+		action = rand() % num_action;
+
+		tm_printf("rl_epsilon_greedy() rand action = %d\n", action);
+	} else {
+		// 最大のQ値を持つ行動を選択する
+		action = rl_select_action(state, num_action, Qtable);
+
+		tm_printf("rl_epsilon_greedy() select action = %d\n", action);
+	}
 	return action;
 }

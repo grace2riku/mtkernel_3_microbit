@@ -99,6 +99,7 @@ static int usrcmd_rl_get_reward(int argc, char **argv);
 static int usrcmd_rl_move(int argc, char **argv);
 static int usrcmd_rl_get_max_Qval(int argc, char **argv);
 static int usrcmd_rl_select_action(int argc, char **argv);
+static int usrcmd_rl_epsilon_greedy(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -161,6 +162,7 @@ static const cmd_table_t cmdlist[] = {
     { "rlmove", "This command checks the reinforcement learning action.", usrcmd_rl_move },
     { "rlgetmaxq", "This command gets the maximum Q value.", usrcmd_rl_get_max_Qval },
     { "rlselact", "This command tests the function that selects the action with the maximum Q value in reinforcement learning.", usrcmd_rl_select_action },
+    { "rlegreedy", "This command executes probabilistic action selection using the e-greedy method.", usrcmd_rl_epsilon_greedy },
 };
 
 enum {
@@ -192,6 +194,7 @@ enum {
   COMMAND_RLMOVE,
   COMMAND_RLGETMAXQ,
   COMMAND_RLSELCTACTION,
+  COMMAND_RLEGREEDY,
   COMMAND_MAX
 };
 
@@ -664,6 +667,22 @@ static int usrcmd_rl_select_action(int argc, char **argv) {
 	int action = rl_select_action(state, num_actions, rl_get_Qtable_address());
 
 	tm_printf("action = %d\n", action);
+
+	return 0;
+}
+
+
+static int usrcmd_rl_epsilon_greedy(int argc, char **argv) {
+	int state = 0;
+	int num_actions = 5;
+	int epsilon = 10;
+	int action;
+
+	rl_init_Qtable();
+	rl_init_epsilon_greedy();
+	action = rl_epsilon_greedy(epsilon, state, num_actions, rl_get_Qtable_address());
+
+	tm_printf("action(epsilon_greedy) = %d\n", action);
 
 	return 0;
 }
