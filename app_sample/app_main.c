@@ -3,6 +3,7 @@
 #include "Hook.h"
 #include "SysCtrl.h"
 #include "log.h"
+#include "reinforcement_learning.h"
 
 LOCAL void trace_task(void);
 // 周期ハンドラの関連情報
@@ -26,6 +27,8 @@ EXPORT INT usermain(void)
 	IMPORT T_CTSK* get_log_task_ctsk_addr();
 	log_tskid = tk_cre_tsk(get_log_task_ctsk_addr());
 	tk_sta_tsk(log_tskid, 0);
+
+	rl_init();
 
 	cycid = tk_cre_cyc(&ccyc);	// 周期ハンドラの生成
 	tk_sta_cyc(cycid);			// 周期ハンドラの動作開始

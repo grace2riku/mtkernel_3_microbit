@@ -7,6 +7,7 @@
 #include <tk/tkernel.h>
 #include <tm/tmonitor.h>
 #include "Trace.h"
+#include "reinforcement_learning.h"
 
 // GPIOTEのレジスタ定義
 #define GPIOTE(r)           (GPIOTE_BASE + GPIOTE_##r)
@@ -91,8 +92,15 @@ LOCAL void btn_inthdr(UINT intno)
 			// 割込み通知用イベントフラグの対応ビットをセット
 			tk_set_flg(button_flgid, (1 << n));
 
-			if (n == 0) tr_runnable();	// Aボタン押下: ライントレース開始
-			if (n == 1) tr_stop();		// Bボタン押下: ライントレース停止
+			if (n == 0) {
+				// Aボタン押下
+				// tr_runnable();
+			}
+			if (n == 1) {
+				// Bボタン押下
+				//tr_stop();
+				tk_set_flg(rl_get_flgid(), RL_TRAIN_RESUME);
+			}
 		}
 	}
 }

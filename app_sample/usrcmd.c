@@ -100,6 +100,9 @@ static int usrcmd_rl_move(int argc, char **argv);
 static int usrcmd_rl_get_max_Qval(int argc, char **argv);
 static int usrcmd_rl_select_action(int argc, char **argv);
 static int usrcmd_rl_epsilon_greedy(int argc, char **argv);
+static int usrcmd_rl_learning(int argc, char **argv);
+static int usrcmd_rl_action(int argc, char **argv);
+static int usrcmd_rl_learning_and_action(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -163,6 +166,9 @@ static const cmd_table_t cmdlist[] = {
     { "rlgetmaxq", "This command gets the maximum Q value.", usrcmd_rl_get_max_Qval },
     { "rlselact", "This command tests the function that selects the action with the maximum Q value in reinforcement learning.", usrcmd_rl_select_action },
     { "rlegreedy", "This command executes probabilistic action selection using the e-greedy method.", usrcmd_rl_epsilon_greedy },
+    { "rl", "This is the command to run reinforcement learning.", usrcmd_rl_learning },
+    { "rlact", "This is a command to execute the policy obtained through reinforcement learning.", usrcmd_rl_action },
+    { "rlandact", "This is a command to execute reinforcement learning and the policy obtained through reinforcement learning.", usrcmd_rl_learning_and_action },
 };
 
 enum {
@@ -195,6 +201,9 @@ enum {
   COMMAND_RLGETMAXQ,
   COMMAND_RLSELCTACTION,
   COMMAND_RLEGREEDY,
+  COMMAND_RL,
+  COMMAND_RLACTION,
+  COMMAND_RLANDACTION,
   COMMAND_MAX
 };
 
@@ -683,6 +692,23 @@ static int usrcmd_rl_epsilon_greedy(int argc, char **argv) {
 	action = rl_epsilon_greedy(epsilon, state, num_actions, rl_get_Qtable_address());
 
 	tm_printf("action(epsilon_greedy) = %d\n", action);
+
+	return 0;
+}
+
+static int usrcmd_rl_learning(int argc, char **argv) {
+	tk_set_flg(rl_get_flgid(), RL_START);
+	return 0;
+}
+
+static int usrcmd_rl_action(int argc, char **argv) {
+	tk_set_flg(rl_get_flgid(), RL_ACTION_START);
+
+	return 0;
+}
+
+static int usrcmd_rl_learning_and_action(int argc, char **argv) {
+	tk_set_flg(rl_get_flgid(), RL_START | RL_ACTION_START);
 
 	return 0;
 }

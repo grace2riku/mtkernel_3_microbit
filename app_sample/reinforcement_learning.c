@@ -15,11 +15,167 @@
 #include "ad.h"
 #include "Sensor.h"
 #include "motor_drv.h"
+#include "button.h"
 
 // Qtable
 // 1次元目: 状態の数
 // 2次元目: 行動の数
-static float mQtable[1][5];
+static float mQtable[Q_TABLE_STATES_NUM][Q_TABLE_ACTIONS_NUM];
+
+LOCAL void rl_learning_task(INT stacd, void *exinf);
+LOCAL void rl_action_task(INT stacd, void *exinf);
+
+LOCAL T_CTSK rl_learning_task_ctsk = {
+	.itskpri	= 10,
+	.stksz		= 1024,
+	.task		= rl_learning_task,
+	.tskatr		= TA_HLNG | TA_RNG3,
+};
+
+EXPORT T_CTSK* get_rl_learning_task_ctsk_addr(void)
+{
+	return &rl_learning_task_ctsk;
+}
+
+LOCAL T_CTSK rl_action_task_ctsk = {
+	.itskpri	= 10,
+	.stksz		= 1024,
+	.task		= rl_action_task,
+	.tskatr		= TA_HLNG | TA_RNG3,
+};
+
+// タスクID
+LOCAL ID rl_learning_tskid;
+LOCAL ID rl_action_tskid;
+
+// イベントフラグID
+LOCAL ID rl_flgid;
+// イベントフラグの生成情報
+LOCAL const T_CFLG crlflg = {0, (TA_TFIFO | TA_WMUL), 0};
+
+static const float alpha = 0.5;	//学習係数
+static const float gamma = 0.9;	//減衰係数
+static int epsilon = 5;			//行動を無作為に選ぶ確率[%]
+static int trial_max = 1000;	//試行回数
+
+EXPORT void rl_init(void) {
+	// イベントフラグ生成
+	rl_flgid = tk_cre_flg(&crlflg);
+
+	// Q値の初期化
+	rl_init_Qtable();
+
+	// 乱数の初期化
+	rl_init_epsilon_greedy();
+
+	rl_learning_tskid = tk_cre_tsk(&rl_learning_task_ctsk);
+	tk_sta_tsk(rl_learning_tskid, 0);
+
+	rl_action_tskid = tk_cre_tsk(&rl_action_task_ctsk);
+	tk_sta_tsk(rl_action_tskid, 0);
+}
+
+EXPORT ID rl_get_flgid(void) {
+	return rl_flgid;
+}
+
+
+EXPORT T_CTSK* get_rl_action_task_ctsk_addr(void)
+{
+	return &rl_action_task_ctsk;
+}
+
+
+LOCAL void rl_learning_task(INT stacd, void *exinf)
+{
+	UINT flgptn, flgptn_resume;
+	float Q_max = 0;	// Ｑ値の最大値
+	float reward = 0;	// 報酬
+	int action = 0;		// 行動
+	int state = 0;		// 状態
+	int next_state = 0;	// 行動後に遷移した状態
+	int i;
+
+	while (1) {
+		tm_printf("rl_learning_task() enter tk_wai_flg() waiptn = RL_START\n");
+		// 強化学習スタート指示待ち
+		tk_wai_flg(rl_flgid, (RL_START | RL_ACTION_START), (TWF_ORW | TWF_CLR), &flgptn, TMO_FEVR);
+		tm_printf("rl_learning_task() exit tk_wai_flg() waiptn = RL_START\n");
+
+		Q_max = 0;		// Ｑ値の最大値
+		reward = 0;		// 報酬
+		action = 0;		// 行動
+		state = 0;		// 状態
+		next_state = 0;	// 行動後に遷移した状態
+
+		//初期状態の観測
+		state = rl_get_state();
+
+		// 試行開始
+		for (i = 0; i < trial_max; i++) {
+			if ( !(i % 100) ) {
+				tm_printf("rl_learning_task() trial count = %d...\n", i);
+			}
+			// 行動の選択
+			action = rl_epsilon_greedy(epsilon, state, Q_TABLE_ACTIONS_NUM, mQtable);
+			// 行動の実行
+			rl_move(action);
+			// 状態の観測
+			next_state = rl_get_state();
+			// 報酬の獲得
+			reward = rl_get_reward();
+
+			// 行動後状態のQ値の最大値を求める
+			Q_max = rl_max_Qval(next_state, Q_TABLE_ACTIONS_NUM, mQtable);
+			// Q値の更新
+			mQtable[state][action] = (1 - alpha) * mQtable[state][action] + alpha * (reward + gamma * Q_max);
+
+			state = next_state;
+
+			if (reward < 0) {
+				state = 0;
+				motor_stop();
+
+				tm_printf("rl_learning_task() enter tk_wai_flg() waiptn = RL_TRAIN_RESUME\n");
+				tm_printf("Place the robot on the line and then press the B button.\n");
+				tk_wai_flg(rl_flgid, RL_TRAIN_RESUME, (TWF_ORW | TWF_CLR), &flgptn_resume, TMO_FEVR);
+				tm_printf("rl_learning_task() exit tk_wai_flg() waiptn = RL_TRAIN_RESUME\n");
+
+				state = rl_get_state();
+			}
+		} // for
+
+		tm_printf("rl_learning_task() trial count = %d.\n", i);
+
+		// 強化学習後に獲得政策を実行する場合はイベントフラグをセットする
+		if (flgptn & RL_ACTION_START) {
+			tk_set_flg(rl_flgid, RL_ACTION_START);
+		}
+	} // while
+}
+
+
+LOCAL void rl_action_task(INT stacd, void *exinf)
+{
+	UINT flgptn;
+	int action = 0;		// 行動
+	int state = 0;		// 状態
+
+	while (1) {
+		tm_printf("rl_action_task() enter tk_wai_flg()\n");
+		// 強化学習で得た政策実行の指示待ち
+		tk_wai_flg(rl_flgid, RL_ACTION_START, (TWF_ORW | TWF_CLR), &flgptn, TMO_FEVR);
+		tm_printf("rl_action_task() exit tk_wai_flg()\n");
+
+		// Bボタンが押されるまでは強化学習で得た政策実行しライントレースし続ける
+		while( !isButtonBPressed() ) {
+			state = rl_get_state();
+			action = rl_select_action(state, Q_TABLE_ACTIONS_NUM, mQtable);
+			rl_move(action);
+		}
+	}
+
+}
 
 int rl_get_state(void) {
 	int state = 3;
@@ -73,11 +229,14 @@ void rl_move(int action) {
 }
 
 void rl_init_Qtable(void) {
-	mQtable[0][0] = 1.0;
-	mQtable[0][1] = 3.0;
-	mQtable[0][2] = 2.0;
-	mQtable[0][3] = 5.0;
-	mQtable[0][4] = 1.0;
+	int i, j;
+
+	//Q値の初期化
+	for(i=0;i < Q_TABLE_STATES_NUM; i++){
+		for(j=0;j < Q_TABLE_ACTIONS_NUM; j++){
+			mQtable[i][j] = 0;
+		}
+	}
 }
 
 float rl_max_Qval(int state, int num_actions, QtablePtr Qtable) {
@@ -122,7 +281,7 @@ void rl_init_epsilon_greedy(void) {
 	SYSTIM	tim;
 	tk_get_tim(&tim);		/* 現在時刻を取得 */
 
-	tm_printf("rl_init_epsilon_greedy() seed(tk_get_tim() output parameter SYSTIM Lower 32bit)= %d\n", tim.lo);
+//	tm_printf("rl_init_epsilon_greedy() seed(tk_get_tim() output parameter SYSTIM Lower 32bit)= %d\n", tim.lo);
 
 	srand(tim.lo);
 }
@@ -135,12 +294,12 @@ int rl_epsilon_greedy(int epsilon, int state, int num_action, QtablePtr Qtable) 
 		// 無作為に行動を選択する
 		action = rand() % num_action;
 
-		tm_printf("rl_epsilon_greedy() rand action = %d\n", action);
+//		tm_printf("rl_epsilon_greedy() rand action = %d\n", action);
 	} else {
 		// 最大のQ値を持つ行動を選択する
 		action = rl_select_action(state, num_action, Qtable);
 
-		tm_printf("rl_epsilon_greedy() select action = %d\n", action);
+//		tm_printf("rl_epsilon_greedy() select action = %d\n", action);
 	}
 	return action;
 }
