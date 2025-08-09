@@ -34,5 +34,8 @@ extern void rl_init_epsilon_greedy(void);
 extern int rl_epsilon_greedy(int epsilon, int state, int num_action, QtablePtr Qtable);
 extern T_CTSK* get_rl_learning_task_ctsk_addr(void);
 extern T_CTSK* get_rl_action_task_ctsk_addr(void);
+extern void rl_output_Qtable(void);
+extern void rl_set_example_Qtable_memcpy(void);
+extern void rl_Qtable_memcpy(QtablePtr srcQtable);
 
 #endif /* REINFORCEMENT_LEARNING_H */

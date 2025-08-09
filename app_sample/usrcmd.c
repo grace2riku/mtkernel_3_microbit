@@ -103,6 +103,8 @@ static int usrcmd_rl_epsilon_greedy(int argc, char **argv);
 static int usrcmd_rl_learning(int argc, char **argv);
 static int usrcmd_rl_action(int argc, char **argv);
 static int usrcmd_rl_learning_and_action(int argc, char **argv);
+static int usrcmd_rl_output_Qtable(int argc, char **argv);
+static int usrcmd_rl_set_Qtable(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -169,6 +171,8 @@ static const cmd_table_t cmdlist[] = {
     { "rl", "This is the command to run reinforcement learning.", usrcmd_rl_learning },
     { "rlact", "This is a command to execute the policy obtained through reinforcement learning.", usrcmd_rl_action },
     { "rlandact", "This is a command to execute reinforcement learning and the policy obtained through reinforcement learning.", usrcmd_rl_learning_and_action },
+    { "rloutqtbl", "This command outputs the value of a Qtable.", usrcmd_rl_output_Qtable },
+    { "rlsetqtbl", "This command sets a value in a Qtable.", usrcmd_rl_set_Qtable },
 };
 
 enum {
@@ -204,6 +208,8 @@ enum {
   COMMAND_RL,
   COMMAND_RLACTION,
   COMMAND_RLANDACTION,
+  COMMAND_RLOUTQTABLE,
+  COMMAND_RLSETQTABLE,
   COMMAND_MAX
 };
 
@@ -709,6 +715,17 @@ static int usrcmd_rl_action(int argc, char **argv) {
 
 static int usrcmd_rl_learning_and_action(int argc, char **argv) {
 	tk_set_flg(rl_get_flgid(), RL_START | RL_ACTION_START);
+
+	return 0;
+}
+
+static int usrcmd_rl_output_Qtable(int argc, char **argv){
+	rl_output_Qtable();
+
+	return 0;
+}
+static int usrcmd_rl_set_Qtable(int argc, char **argv) {
+	rl_set_example_Qtable_memcpy();
 
 	return 0;
 }

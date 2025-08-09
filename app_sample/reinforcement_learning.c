@@ -99,7 +99,7 @@ LOCAL void rl_learning_task(INT stacd, void *exinf)
 	while (1) {
 		tm_printf("rl_learning_task() enter tk_wai_flg() waiptn = RL_START\n");
 		// 強化学習スタート指示待ち
-		tk_wai_flg(rl_flgid, (RL_START | RL_ACTION_START), (TWF_ORW | TWF_CLR), &flgptn, TMO_FEVR);
+		tk_wai_flg(rl_flgid, RL_START, (TWF_ORW | TWF_CLR), &flgptn, TMO_FEVR);
 		tm_printf("rl_learning_task() exit tk_wai_flg() waiptn = RL_START\n");
 
 		Q_max = 0;		// Ｑ値の最大値
@@ -113,6 +113,7 @@ LOCAL void rl_learning_task(INT stacd, void *exinf)
 
 		// 試行開始
 		for (i = 0; i < trial_max; i++) {
+			tk_dly_tsk(20);
 			if ( !(i % 100) ) {
 				tm_printf("rl_learning_task() trial count = %d...\n", i);
 			}
@@ -145,12 +146,9 @@ LOCAL void rl_learning_task(INT stacd, void *exinf)
 			}
 		} // for
 
+		motor_stop();
 		tm_printf("rl_learning_task() trial count = %d.\n", i);
-
-		// 強化学習後に獲得政策を実行する場合はイベントフラグをセットする
-		if (flgptn & RL_ACTION_START) {
-			tk_set_flg(rl_flgid, RL_ACTION_START);
-		}
+		rl_output_Qtable();
 	} // while
 }
 
@@ -169,10 +167,12 @@ LOCAL void rl_action_task(INT stacd, void *exinf)
 
 		// Bボタンが押されるまでは強化学習で得た政策実行しライントレースし続ける
 		while( !isButtonBPressed() ) {
+			tk_dly_tsk(20);
 			state = rl_get_state();
 			action = rl_select_action(state, Q_TABLE_ACTIONS_NUM, mQtable);
 			rl_move(action);
 		}
+		motor_stop();
 	}
 
 }
@@ -302,4 +302,44 @@ int rl_epsilon_greedy(int epsilon, int state, int num_action, QtablePtr Qtable) 
 //		tm_printf("rl_epsilon_greedy() select action = %d\n", action);
 	}
 	return action;
+}
+
+void rl_output_Qtable(void) {
+	int i, j;
+
+	for (i = 0; i < Q_TABLE_STATES_NUM; i++) {
+		for (j = 0; j < Q_TABLE_ACTIONS_NUM; j++) {
+			xprintf("Qtable[%d][%d] = %f\n", i, j, mQtable[i][j]);
+		}
+	}
+}
+
+void rl_set_example_Qtable_memcpy(void) {
+	float example_Qtable[Q_TABLE_STATES_NUM][Q_TABLE_ACTIONS_NUM];
+
+	// 20250809 強化学習で得た政策でライントレースできたときのQtable値
+	example_Qtable[0][0] = -49.403526;
+	example_Qtable[0][1] = -97.823532;
+	example_Qtable[0][2] = -113.177238;
+	example_Qtable[1][0] = -113.157005;
+	example_Qtable[1][1] = -108.166664;
+	example_Qtable[1][2] = -89.119911;
+	example_Qtable[2][0] = -72.646233;
+	example_Qtable[2][1] = -33.338005;
+	example_Qtable[2][2] = -106.562347;
+	example_Qtable[3][0] = -129.607758;
+	example_Qtable[3][1] = -142.625000;
+	example_Qtable[3][2] = -164.059372;
+
+	rl_Qtable_memcpy(example_Qtable);
+}
+
+void rl_Qtable_memcpy(QtablePtr srcQtable) {
+	int i, j;
+
+	for (i = 0; i < Q_TABLE_STATES_NUM; i++) {
+		for (j = 0; j < Q_TABLE_ACTIONS_NUM; j++) {
+			mQtable[i][j] = srcQtable[i][j];
+		}
+	}
 }

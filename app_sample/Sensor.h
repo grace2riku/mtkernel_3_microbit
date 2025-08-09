@@ -6,7 +6,8 @@
 #define LIGHTGRAY_THRESHORD     159	/* 淡い灰色の上限値 */
 #define GRAY_THRESHORD          266	/* 灰色の上限値 */
 #define DARKGRAY_THRESHORD      373	/* 濃い灰色の上限値 */
-#define BLACK_THRESHORD         480	/* 黒の上限値 */
+//#define BLACK_THRESHORD         480	/* 黒の上限値 */
+#define BLACK_THRESHORD         400	/* 黒の上限値 */
 
 extern void ss_init(void);
 extern void ss_term(void);
