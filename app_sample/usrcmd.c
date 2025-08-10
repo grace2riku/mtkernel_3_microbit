@@ -102,7 +102,6 @@ static int usrcmd_rl_select_action(int argc, char **argv);
 static int usrcmd_rl_epsilon_greedy(int argc, char **argv);
 static int usrcmd_rl_learning(int argc, char **argv);
 static int usrcmd_rl_action(int argc, char **argv);
-static int usrcmd_rl_learning_and_action(int argc, char **argv);
 static int usrcmd_rl_output_Qtable(int argc, char **argv);
 static int usrcmd_rl_set_example_Qtable(int argc, char **argv);
 
@@ -170,7 +169,6 @@ static const cmd_table_t cmdlist[] = {
     { "rlegreedy", "This command executes probabilistic action selection using the e-greedy method.", usrcmd_rl_epsilon_greedy },
     { "rl", "This is the command to run reinforcement learning.", usrcmd_rl_learning },
     { "rlact", "This is a command to execute the policy obtained through reinforcement learning.", usrcmd_rl_action },
-    { "rlandact", "This is a command to execute reinforcement learning and the policy obtained through reinforcement learning.", usrcmd_rl_learning_and_action },
     { "rloutqtbl", "This command outputs the value of a Qtable.", usrcmd_rl_output_Qtable },
     { "rlsetexqtbl", "This command sets the value of the Qtable in the example settings stored within the program.", usrcmd_rl_set_example_Qtable },
 };
@@ -207,7 +205,6 @@ enum {
   COMMAND_RLEGREEDY,
   COMMAND_RL,
   COMMAND_RLACTION,
-  COMMAND_RLANDACTION,
   COMMAND_RLOUTQTABLE,
   COMMAND_RLSETQTABLE,
   COMMAND_MAX
@@ -713,17 +710,12 @@ static int usrcmd_rl_action(int argc, char **argv) {
 	return 0;
 }
 
-static int usrcmd_rl_learning_and_action(int argc, char **argv) {
-	tk_set_flg(rl_get_flgid(), RL_START | RL_ACTION_START);
-
-	return 0;
-}
-
 static int usrcmd_rl_output_Qtable(int argc, char **argv){
 	rl_output_Qtable();
 
 	return 0;
 }
+
 static int usrcmd_rl_set_example_Qtable(int argc, char **argv) {
 	rl_set_example_Qtable_memcpy();
 
