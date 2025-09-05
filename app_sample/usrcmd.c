@@ -79,6 +79,7 @@ static int usrcmd_getButton(int argc, char **argv);
 static int usrcmd_driveMotor(int argc, char **argv);
 static int usrcmd_get_device_id(int argc, char **argv);
 static int usrcmd_read_acceleration(int argc, char **argv);
+static int usrcmd_read_acceleration_g(int argc, char **argv);
 static int usrcmd_read_temp(int argc, char **argv);
 static int usrcmd_chk_btn_interrupt(int argc, char **argv);
 static int usrcmd_led_set(int argc, char **argv);
@@ -145,7 +146,8 @@ static const cmd_table_t cmdlist[] = {
     { "getbtn", "This command is used to obtain the press status of a button(A,B and LOGO).", usrcmd_getButton },
     { "drivemotor", "This command drives the motor.", usrcmd_driveMotor },
     { "getdevid", "This command is used to obtain the device ID.", usrcmd_get_device_id },
-    { "readacc", "This command reads the accelerometer.", usrcmd_read_acceleration },
+    { "readacc", "This command reads the accelerometer(LSB).", usrcmd_read_acceleration },
+    { "readaccg", "This command reads the accelerometer(g).", usrcmd_read_acceleration_g },
     { "readtemp", "This command reads the temperature.", usrcmd_read_temp },
     { "chkbtnint", "This command checks for button interruptions.", usrcmd_chk_btn_interrupt },
     { "ledset", "This command turns the LEDs on and off.", usrcmd_led_set },
@@ -182,6 +184,7 @@ enum {
   COMMAND_DRIVEMOTOR,
   COMMAND_GETDEVID,
   COMMAND_READACC,
+  COMMAND_READACC_G,
   COMMAND_REATEMP,
   COMMAND_CHKBTNINT,
   COMMAND_LEDSET,
@@ -374,6 +377,20 @@ static int usrcmd_read_acceleration(int argc, char **argv){
 	acceleration_sensor_read(&x, &y, &z);
 
 	tm_printf("Acc: x,y,z=%4d,%4d,%4d\n", x, y, z);
+
+	return 0;
+}
+
+static int usrcmd_read_acceleration_g(int argc, char **argv){
+	int x, y, z;
+	float x_g, y_g, z_g;
+
+	acceleration_sensor_read(&x, &y, &z);
+	x_g = (float)(x * 4) / 1000;
+	y_g = (float)(y * 4) / 1000;
+	z_g = (float)(z * 4) / 1000;
+
+	xprintf("%f,%f,%f\n", x_g, y_g, z_g);
 
 	return 0;
 }
