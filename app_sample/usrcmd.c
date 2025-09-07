@@ -403,7 +403,9 @@ static int usrcmd_read_acceleration_g(int argc, char **argv){
 static int usrcmd_read_acceleration_g_loop(int argc, char **argv){
 	int x, y, z;
 	float x_g, y_g, z_g;
-	int time_ms = 10000;
+	int time_ms = 10000; // 加速度センサを読み出す時間(ms) 10秒に設定
+	// 加速度センサを読み出す間隔(ms)
+	// CTRL_REG1_A = 0x5* は100 Hz（== 10msごとに更新）のため20ms読み出しとした
 	int read_interval_time_ms = 20;
 	W cmd_start_time = cur_time(); // コマンド開始時刻を取得する
 

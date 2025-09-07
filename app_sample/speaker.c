@@ -44,6 +44,6 @@ void play_speaker(INT freq, INT play_time)
 	INT limit = cycle_us * ptmr_clk_mhz - 1;		// 物理タイマの上限値
 
 	StartPhysicalTimer(ptmrno, limit, TA_CYC_PTMR);	// 物理タイマの動作開始
-	tk_dly_tsk(play_time);							// 再生時間だけ待つ(※V)
+	tk_dly_tsk(play_time);							// 再生時間だけ待つ
 	StopPhysicalTimer(ptmrno);
 }
