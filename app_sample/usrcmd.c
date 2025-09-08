@@ -107,6 +107,7 @@ static int usrcmd_rl_learning(int argc, char **argv);
 static int usrcmd_rl_action(int argc, char **argv);
 static int usrcmd_rl_output_Qtable(int argc, char **argv);
 static int usrcmd_rl_set_example_Qtable(int argc, char **argv);
+static int usrcmd_rl_set_Qtable(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -176,6 +177,7 @@ static const cmd_table_t cmdlist[] = {
     { "rlact", "This is a command to execute the policy obtained through reinforcement learning.", usrcmd_rl_action },
     { "rloutqtbl", "This command outputs the value of a Qtable.", usrcmd_rl_output_Qtable },
     { "rlsetexqtbl", "This command sets the value of the Qtable in the example settings stored within the program.", usrcmd_rl_set_example_Qtable },
+    { "rlsetqtbl", "This command sets the value of the Qtable specified in the command line argument.", usrcmd_rl_set_Qtable },
 };
 
 enum {
@@ -213,6 +215,7 @@ enum {
   COMMAND_RL,
   COMMAND_RLACTION,
   COMMAND_RLOUTQTABLE,
+  COMMAND_RLSETEXQTABLE,
   COMMAND_RLSETQTABLE,
   COMMAND_MAX
 };
@@ -758,11 +761,40 @@ static int usrcmd_rl_action(int argc, char **argv) {
 static int usrcmd_rl_output_Qtable(int argc, char **argv){
 	rl_output_Qtable();
 
+    uart_puts("\r\n");
+
+	rl_output_rlsetqtbl_cmd_Qtable_format();
+
 	return 0;
 }
 
 static int usrcmd_rl_set_example_Qtable(int argc, char **argv) {
 	rl_set_example_Qtable_memcpy();
+
+	return 0;
+}
+
+static int usrcmd_rl_set_Qtable(int argc, char **argv) {
+	int i, j;
+	float setting_Qtable[Q_TABLE_STATES_NUM][Q_TABLE_ACTIONS_NUM];
+	double Qtable_num;
+
+	if (argc != 13) {
+        uart_puts("parameter count error.\r\n");
+        return -1;
+    }
+
+	for (i = 0; i < Q_TABLE_STATES_NUM; i++) {
+		for (j = 0; j < Q_TABLE_ACTIONS_NUM; j++) {
+			if (!xatof(&argv[1 + (i * Q_TABLE_ACTIONS_NUM + j)], (double*)&Qtable_num)) {
+		        uart_puts("parameter error.\r\n");
+				return -2;
+			}
+			setting_Qtable[i][j] = (float)Qtable_num;
+		}
+	}
+
+	rl_Qtable_memcpy(setting_Qtable);
 
 	return 0;
 }

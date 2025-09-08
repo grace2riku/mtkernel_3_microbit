@@ -37,5 +37,6 @@ extern T_CTSK* get_rl_action_task_ctsk_addr(void);
 extern void rl_output_Qtable(void);
 extern void rl_set_example_Qtable_memcpy(void);
 extern void rl_Qtable_memcpy(QtablePtr srcQtable);
+extern void rl_output_rlsetqtbl_cmd_Qtable_format(void);
 
 #endif /* REINFORCEMENT_LEARNING_H */

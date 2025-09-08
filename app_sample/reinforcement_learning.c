@@ -149,6 +149,7 @@ LOCAL void rl_learning_task(INT stacd, void *exinf)
 		motor_stop();
 		tm_printf("rl_learning_task() trial count = %d.\n", i);
 		rl_output_Qtable();
+		rl_output_rlsetqtbl_cmd_Qtable_format();
 	} // while
 }
 
@@ -312,6 +313,20 @@ void rl_output_Qtable(void) {
 			xprintf("Qtable[%d][%d] = %f\n", i, j, mQtable[i][j]);
 		}
 	}
+}
+
+void rl_output_rlsetqtbl_cmd_Qtable_format(void) {
+	int i, j;
+
+	xprintf("rlsetqtbl command setting format\n");
+	xprintf("rlsetqtbl ");
+
+	for (i = 0; i < Q_TABLE_STATES_NUM; i++) {
+		for (j = 0; j < Q_TABLE_ACTIONS_NUM; j++) {
+			xprintf("%f ", mQtable[i][j]);
+		}
+	}
+	xprintf("\n");
 }
 
 void rl_set_example_Qtable_memcpy(void) {

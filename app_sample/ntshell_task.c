@@ -43,7 +43,7 @@ static int user_callback(const char* text, void* extobj) {
 LOCAL void ntshell_task(INT stacd, void *exinf);	// task execution function
 LOCAL T_CTSK ntshell_task_ctsk = {				// Task creation information
 	.itskpri	= 10,
-	.stksz		= 2048,	// 1024
+	.stksz		= 8192,	// 1024, 2048, 4096
 	.task		= ntshell_task,
 	.tskatr		= TA_HLNG | TA_RNG3,
 };
