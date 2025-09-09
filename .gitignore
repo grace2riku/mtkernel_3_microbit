@@ -10,6 +10,7 @@ device/ser/*
 # build_make配下を無視
 build_make/*
 
+.DS_Store
 
 # 必要なものだけ例外
 !.gitignore
@@ -21,3 +22,6 @@ build_make/*
 
 !build_make/microbit.mk
 !build_make/makefile
+
+!nnc/
+!nnc/**

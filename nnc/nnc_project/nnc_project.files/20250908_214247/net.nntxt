@@ -1,0 +1,529 @@
+global_config {
+  default_context {
+    array_class: "CpuCachedArray"
+    backends: "cpu:float"
+  }
+}
+training_config {
+  max_epoch: 100
+  iter_per_epoch: 20
+  save_best: true
+  monitor_interval: 10
+}
+network {
+  name: "Main"
+  batch_size: 64
+  variable {
+    name: "Input"
+    type: "Buffer"
+    shape: { dim:-1 dim: 3 }
+  }
+  variable {
+    name: "Affine/affine/W"
+    type: "Parameter"
+    shape: { dim: 3 dim: 16 }
+    initializer {
+      type: "NormalAffineGlorot"
+      multiplier: 1
+    }
+  }
+  variable {
+    name: "Affine/affine/b"
+    type: "Parameter"
+    shape: { dim: 16 }
+    initializer {
+      type: "Constant"
+      multiplier: 0
+    }
+  }
+  variable {
+    name: "Affine_2/affine/W"
+    type: "Parameter"
+    shape: { dim: 16 dim: 5 }
+    initializer {
+      type: "NormalAffineGlorot"
+      multiplier: 1
+    }
+  }
+  variable {
+    name: "Affine_2/affine/b"
+    type: "Parameter"
+    shape: { dim: 5 }
+    initializer {
+      type: "Constant"
+      multiplier: 0
+    }
+  }
+  variable {
+    name: "SoftmaxCrossEntropy_T"
+    type: "Buffer"
+    shape: { dim:-1 dim: 1 }
+  }
+  variable {
+    name: "TopNError_T"
+    type: "Buffer"
+    shape: { dim:-1 dim: 1 }
+  }
+  variable {
+    name: "Affine"
+    type: "Buffer"
+    shape: { dim:-1 dim: 16 }
+  }
+  variable {
+    name: "ReLU"
+    type: "Buffer"
+    shape: { dim:-1 dim: 16 }
+  }
+  variable {
+    name: "Affine_2"
+    type: "Buffer"
+    shape: { dim:-1 dim: 5 }
+  }
+  variable {
+    name: "SoftmaxCrossEntropy"
+    type: "Buffer"
+    shape: { dim:-1 dim: 1 }
+  }
+  variable {
+    name: "TopNError"
+    type: "Buffer"
+    shape: { dim:-1 dim: 1 }
+  }
+  function {
+    name: "Affine"
+    type: "Affine"
+    input: "Input"
+    input: "Affine/affine/W"
+    input: "Affine/affine/b"
+    output: "Affine"
+    affine_param {
+      base_axis: 1
+    }
+  }
+  function {
+    name: "ReLU"
+    type: "ReLU"
+    input: "Affine"
+    output: "ReLU"
+    relu_param {
+      inplace: True
+    }
+  }
+  function {
+    name: "Affine_2"
+    type: "Affine"
+    input: "ReLU"
+    input: "Affine_2/affine/W"
+    input: "Affine_2/affine/b"
+    output: "Affine_2"
+    affine_param {
+      base_axis: 1
+    }
+  }
+  function {
+    name: "SoftmaxCrossEntropy"
+    type: "SoftmaxCrossEntropy"
+    input: "Affine_2"
+    input: "SoftmaxCrossEntropy_T"
+    output: "SoftmaxCrossEntropy"
+    softmax_cross_entropy_param {
+      axis: 1
+    }
+  }
+  function {
+    name: "TopNError"
+    type: "TopNError"
+    input: "Affine_2"
+    input: "TopNError_T"
+    output: "TopNError"
+    top_n_error_param {
+      axis: 1
+      n: 1
+    }
+  }
+}
+network {
+  name: "MainValidation"
+  batch_size: 64
+  variable {
+    name: "Input"
+    type: "Buffer"
+    shape: { dim:-1 dim: 3 }
+  }
+  variable {
+    name: "Affine/affine/W"
+    type: "Parameter"
+    shape: { dim: 3 dim: 16 }
+    initializer {
+      type: "NormalAffineGlorot"
+      multiplier: 1
+    }
+  }
+  variable {
+    name: "Affine/affine/b"
+    type: "Parameter"
+    shape: { dim: 16 }
+    initializer {
+      type: "Constant"
+      multiplier: 0
+    }
+  }
+  variable {
+    name: "Affine_2/affine/W"
+    type: "Parameter"
+    shape: { dim: 16 dim: 5 }
+    initializer {
+      type: "NormalAffineGlorot"
+      multiplier: 1
+    }
+  }
+  variable {
+    name: "Affine_2/affine/b"
+    type: "Parameter"
+    shape: { dim: 5 }
+    initializer {
+      type: "Constant"
+      multiplier: 0
+    }
+  }
+  variable {
+    name: "SoftmaxCrossEntropy_T"
+    type: "Buffer"
+    shape: { dim:-1 dim: 1 }
+  }
+  variable {
+    name: "TopNError_T"
+    type: "Buffer"
+    shape: { dim:-1 dim: 1 }
+  }
+  variable {
+    name: "Affine"
+    type: "Buffer"
+    shape: { dim:-1 dim: 16 }
+  }
+  variable {
+    name: "ReLU"
+    type: "Buffer"
+    shape: { dim:-1 dim: 16 }
+  }
+  variable {
+    name: "Affine_2"
+    type: "Buffer"
+    shape: { dim:-1 dim: 5 }
+  }
+  variable {
+    name: "SoftmaxCrossEntropy"
+    type: "Buffer"
+    shape: { dim:-1 dim: 1 }
+  }
+  variable {
+    name: "TopNError"
+    type: "Buffer"
+    shape: { dim:-1 dim: 1 }
+  }
+  function {
+    name: "Affine"
+    type: "Affine"
+    input: "Input"
+    input: "Affine/affine/W"
+    input: "Affine/affine/b"
+    output: "Affine"
+    affine_param {
+      base_axis: 1
+    }
+  }
+  function {
+    name: "ReLU"
+    type: "ReLU"
+    input: "Affine"
+    output: "ReLU"
+    relu_param {
+      inplace: True
+    }
+  }
+  function {
+    name: "Affine_2"
+    type: "Affine"
+    input: "ReLU"
+    input: "Affine_2/affine/W"
+    input: "Affine_2/affine/b"
+    output: "Affine_2"
+    affine_param {
+      base_axis: 1
+    }
+  }
+  function {
+    name: "SoftmaxCrossEntropy"
+    type: "SoftmaxCrossEntropy"
+    input: "Affine_2"
+    input: "SoftmaxCrossEntropy_T"
+    output: "SoftmaxCrossEntropy"
+    softmax_cross_entropy_param {
+      axis: 1
+    }
+  }
+  function {
+    name: "TopNError"
+    type: "TopNError"
+    input: "Affine_2"
+    input: "TopNError_T"
+    output: "TopNError"
+    top_n_error_param {
+      axis: 1
+      n: 1
+    }
+  }
+}
+network {
+  name: "MainRuntime"
+  batch_size: 64
+  variable {
+    name: "Input"
+    type: "Buffer"
+    shape: { dim:-1 dim: 3 }
+  }
+  variable {
+    name: "Affine/affine/W"
+    type: "Parameter"
+    shape: { dim: 3 dim: 16 }
+    initializer {
+      type: "NormalAffineGlorot"
+      multiplier: 1
+    }
+  }
+  variable {
+    name: "Affine/affine/b"
+    type: "Parameter"
+    shape: { dim: 16 }
+    initializer {
+      type: "Constant"
+      multiplier: 0
+    }
+  }
+  variable {
+    name: "Affine_2/affine/W"
+    type: "Parameter"
+    shape: { dim: 16 dim: 5 }
+    initializer {
+      type: "NormalAffineGlorot"
+      multiplier: 1
+    }
+  }
+  variable {
+    name: "Affine_2/affine/b"
+    type: "Parameter"
+    shape: { dim: 5 }
+    initializer {
+      type: "Constant"
+      multiplier: 0
+    }
+  }
+  variable {
+    name: "Affine"
+    type: "Buffer"
+    shape: { dim:-1 dim: 16 }
+  }
+  variable {
+    name: "ReLU"
+    type: "Buffer"
+    shape: { dim:-1 dim: 16 }
+  }
+  variable {
+    name: "Affine_2"
+    type: "Buffer"
+    shape: { dim:-1 dim: 5 }
+  }
+  function {
+    name: "Affine"
+    type: "Affine"
+    input: "Input"
+    input: "Affine/affine/W"
+    input: "Affine/affine/b"
+    output: "Affine"
+    affine_param {
+      base_axis: 1
+    }
+  }
+  function {
+    name: "ReLU"
+    type: "ReLU"
+    input: "Affine"
+    output: "ReLU"
+    relu_param {
+      inplace: True
+    }
+  }
+  function {
+    name: "Affine_2"
+    type: "Affine"
+    input: "ReLU"
+    input: "Affine_2/affine/W"
+    input: "Affine_2/affine/b"
+    output: "Affine_2"
+    affine_param {
+      base_axis: 1
+    }
+  }
+}
+dataset {
+  name: "Training"
+  uri: "C:\\neural_network_console_340\\work\\mtkernel_3_microbit\\tr_data\\3\\train_id.csv"
+  cache_dir: "C:\\neural_network_console_340\\work\\mtkernel_3_microbit\\tr_data\\3\\train_id.cache"
+  overwrite_cache: true
+  create_cache_explicitly: true
+  shuffle: false
+  no_image_normalization: true
+  batch_size: 64
+}
+dataset {
+  name: "Validation"
+  uri: "C:\\neural_network_console_340\\work\\mtkernel_3_microbit\\tr_data\\3\\val_id.csv"
+  cache_dir: "C:\\neural_network_console_340\\work\\mtkernel_3_microbit\\tr_data\\3\\val_id.cache"
+  overwrite_cache: true
+  create_cache_explicitly: true
+  shuffle: true
+  no_image_normalization: true
+  batch_size: 64
+}
+optimizer {
+  start_iter: 0
+  end_iter: 0
+  name: "Optimizer"
+  update_interval: 1
+  network_name: "Main"
+  dataset_name: "Training"
+  solver {
+    type: "Adam"
+    weight_decay: 0
+    adam_param {
+      alpha: 0.001
+      beta1: 0.9
+      beta2: 0.999
+      eps: 1e-08
+    }
+    lr_scheduler_type: "Exponential"
+    exponential_scheduler_param {
+      gamma: 1
+      iter_interval: 20
+    }
+    lr_decay: 1
+    lr_decay_interval: 20
+    lr_warmup_scheduler_type: "None"
+  }
+  data_variable {
+    variable_name: "Input"
+    data_name: "x"
+  }
+  data_variable {
+    variable_name: "SoftmaxCrossEntropy_T"
+    data_name: "label_id"
+  }
+  data_variable {
+    variable_name: "TopNError_T"
+    data_name: "label_id"
+  }
+  loss_variable {
+    variable_name: "SoftmaxCrossEntropy"
+  }
+  loss_variable {
+    variable_name: "TopNError"
+  }
+  parameter_variable {
+    variable_name: "Affine/affine/W"
+    learning_rate_multiplier: 1
+  }
+  parameter_variable {
+    variable_name: "Affine/affine/b"
+    learning_rate_multiplier: 1
+  }
+  parameter_variable {
+    variable_name: "Affine_2/affine/W"
+    learning_rate_multiplier: 1
+  }
+  parameter_variable {
+    variable_name: "Affine_2/affine/b"
+    learning_rate_multiplier: 1
+  }
+}
+monitor {
+  name: "train_error"
+  network_name: "MainValidation"
+  dataset_name: "Training"
+  data_variable {
+    variable_name: "Input"
+    data_name: "x"
+  }
+  data_variable {
+    variable_name: "SoftmaxCrossEntropy_T"
+    data_name: "label_id"
+  }
+  data_variable {
+    variable_name: "TopNError_T"
+    data_name: "label_id"
+  }
+  monitor_variable {
+    type: "Error"
+    variable_name: "SoftmaxCrossEntropy"
+  }
+  monitor_variable {
+    type: "Error"
+    variable_name: "TopNError"
+  }
+}
+monitor {
+  name: "valid_error"
+  network_name: "MainValidation"
+  dataset_name: "Validation"
+  data_variable {
+    variable_name: "Input"
+    data_name: "x"
+  }
+  data_variable {
+    variable_name: "SoftmaxCrossEntropy_T"
+    data_name: "label_id"
+  }
+  data_variable {
+    variable_name: "TopNError_T"
+    data_name: "label_id"
+  }
+  monitor_variable {
+    type: "Error"
+    variable_name: "SoftmaxCrossEntropy"
+  }
+  monitor_variable {
+    type: "Error"
+    variable_name: "TopNError"
+  }
+}
+executor {
+  name: "Executor"
+  network_name: "MainRuntime"
+  num_evaluations: 1
+  repeat_evaluation_type: "mean"
+  need_back_propagation: false
+  no_image_normalization: true
+  data_variable {
+    variable_name: "Input"
+    data_name: "x"
+  }
+  output_variable {
+    variable_name: "Affine_2"
+    data_name: "label_id'"
+  }
+  output_variable {
+    variable_name: "Affine_2"
+    data_name: "label_id'"
+  }
+  parameter_variable {
+    variable_name: "Affine/affine/W"
+  }
+  parameter_variable {
+    variable_name: "Affine/affine/b"
+  }
+  parameter_variable {
+    variable_name: "Affine_2/affine/W"
+  }
+  parameter_variable {
+    variable_name: "Affine_2/affine/b"
+  }
+}

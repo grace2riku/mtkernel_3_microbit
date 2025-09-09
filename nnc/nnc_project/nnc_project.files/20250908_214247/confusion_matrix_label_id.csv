@@ -1,0 +1,13 @@
+,label_id'__0,label_id'__1,label_id'__2,label_id'__3,label_id'__4,Recall
+label_id=0,59,0,0,0,0,1
+label_id=1,0,72,0,0,0,1
+label_id=2,0,0,73,0,0,1
+label_id=3,0,0,0,61,0,1
+label_id=4,0,0,0,0,69,1
+Precision,1,1,1,1,1,
+F-Measures,1,1,1,1,1,
+,,,,,,
+Accuracy,1,,,,,
+Avg.Precision,1,,,,,
+Avg.Recall,1,,,,,
+Avg.F-Measures,1,,,,,
