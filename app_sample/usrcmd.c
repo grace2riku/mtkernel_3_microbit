@@ -68,6 +68,7 @@ MEMO: size_t多重定義対応
 
 #include "log.h"
 #include "reinforcement_learning.h"
+#include "posture_inference_task.h"
 
 typedef int (*USRCMDFUNC)(int argc, char **argv);
 
@@ -108,6 +109,7 @@ static int usrcmd_rl_action(int argc, char **argv);
 static int usrcmd_rl_output_Qtable(int argc, char **argv);
 static int usrcmd_rl_set_example_Qtable(int argc, char **argv);
 static int usrcmd_rl_set_Qtable(int argc, char **argv);
+static int usrcmd_posture_infer(int argc, char **argv);
 
 static char mr_cmd_example[] = "mr <[b|h|w]> <addr> [count]\n"
 "1byte * 16count read example) >mr b 0x1801e35d 16\n"
@@ -178,6 +180,7 @@ static const cmd_table_t cmdlist[] = {
     { "rloutqtbl", "This command outputs the value of a Qtable.", usrcmd_rl_output_Qtable },
     { "rlsetexqtbl", "This command sets the value of the Qtable in the example settings stored within the program.", usrcmd_rl_set_example_Qtable },
     { "rlsetqtbl", "This command sets the value of the Qtable specified in the command line argument.", usrcmd_rl_set_Qtable },
+    { "posture_infer", "This command estimates the pose of the robot in a falling state.", usrcmd_posture_infer },
 };
 
 enum {
@@ -217,6 +220,7 @@ enum {
   COMMAND_RLOUTQTABLE,
   COMMAND_RLSETEXQTABLE,
   COMMAND_RLSETQTABLE,
+  COMMAND_POSTURE_INFER,
   COMMAND_MAX
 };
 
@@ -797,4 +801,9 @@ static int usrcmd_rl_set_Qtable(int argc, char **argv) {
 	rl_Qtable_memcpy(setting_Qtable);
 
 	return 0;
+}
+
+
+static int usrcmd_posture_infer(int argc, char **argv) {
+	tk_set_flg(get_posture_inference_task_flgid(), INFERENCE_START);
 }

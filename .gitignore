@@ -1,7 +1,23 @@
 # すべて無視
 *
+# device配下を無視
+device/*
+# ser ディレクトリは許可
+!device/ser/
+# ただし ser 配下は基本無視
+device/ser/*
+
+# build_make配下を無視
+build_make/*
+
 
 # 必要なものだけ例外
 !.gitignore
 !app_sample/
 !app_sample/**
+
+# device/serのser_cnf.hだけ許可
+!device/ser/ser_cnf.h
+
+!build_make/microbit.mk
+!build_make/makefile

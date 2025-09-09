@@ -4,6 +4,7 @@
 #include "SysCtrl.h"
 #include "log.h"
 #include "reinforcement_learning.h"
+#include "posture_inference_task.h"
 
 LOCAL void trace_task(void);
 // 周期ハンドラの関連情報
@@ -29,6 +30,7 @@ EXPORT INT usermain(void)
 	tk_sta_tsk(log_tskid, 0);
 
 	rl_init();
+	init_posture_inference_task();
 
 	cycid = tk_cre_cyc(&ccyc);	// 周期ハンドラの生成
 	tk_sta_cyc(cycid);			// 周期ハンドラの動作開始
