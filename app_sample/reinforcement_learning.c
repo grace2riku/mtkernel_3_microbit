@@ -63,7 +63,8 @@ EXPORT void rl_init(void) {
 	rl_flgid = tk_cre_flg(&crlflg);
 
 	// Q値の初期化
-	rl_init_Qtable();
+//	rl_init_Qtable();	// 0で初期化
+	rl_set_example_Qtable_memcpy();	// 20250809 強化学習してライントレースできたときのQtable値で初期化
 
 	// 乱数の初期化
 	rl_init_epsilon_greedy();
