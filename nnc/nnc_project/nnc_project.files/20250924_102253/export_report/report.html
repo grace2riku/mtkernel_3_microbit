@@ -1,0 +1,75 @@
+<h1>nnc_project</h1>
+<p></p>
+<h2>Dataset : Training</h2>
+<ul>
+<li>Number of data : 1,335</li>
+<li>Variable : x</li>
+<ul>
+<li>Type : Vector</li>
+<li>Shape : 3</li>
+</ul>
+<li>Variable : label_id</li>
+<ul>
+<li>Type : Scalar</li>
+</ul>
+</ul>
+<h2>Dataset : Validation</h2>
+<ul>
+<li>Number of data : 334</li>
+<li>Variable : x</li>
+<ul>
+<li>Type : Vector</li>
+<li>Shape : 3</li>
+</ul>
+<li>Variable : label_id</li>
+<ul>
+<li>Type : Scalar</li>
+</ul>
+</ul>
+<h2>Network Architecture : Main</h2>
+<img src="C:\neural_network_console_340\work\mtkernel_3_microbit-main\nnc\nnc_project\nnc_project.files\20250924_102253\export_report\network_0.png">
+<table border=1><tr><th>Type</th><th>Value</th></tr>
+<tr><td>Output</td><td>42</td></tr>
+<tr><td>CostParameter</td><td>149</td></tr>
+<tr><td>CostAdd</td><td>26</td></tr>
+<tr><td>CostMultiply</td><td>0</td></tr>
+<tr><td>CostMultiplyAdd</td><td>128</td></tr>
+<tr><td>CostDivision</td><td>5</td></tr>
+<tr><td>CostExp</td><td>5</td></tr>
+<tr><td>CostIf</td><td>16</td></tr>
+</table>
+<h2>Training Procedure : Optimizer</h2>
+<p>Optimize network "Main" using "Training" dataset.</p>
+<ul>
+<li>Batch size : 64</li>
+<li>Solver : Adam</li>
+<ul>
+<li>Learning rate(Alpha) : 0.001</li>
+<ul>
+</ul>
+<li>Beta1 : 0.9</li>
+<li>Beta2 : 0.999</li>
+<li>Epsilon : 1e-08</li>
+</ul>
+<li>Weight decay is not applied.</li>
+</ul>
+<h2>Experimental Result : Learning Curve</h2>
+<img src="C:\neural_network_console_340\work\mtkernel_3_microbit-main\nnc\nnc_project\nnc_project.files\20250924_102253\export_report\learning_curve.png">
+<h2>Experimental Result : Evaluation</h2>
+<p>Evaluate network "MainRuntime" using "Validation" dataset.</p>
+<ul>
+</ul>
+<p>Variable : label_id</p>
+<ul>
+<li>Accuracy : 1</li>
+<li>Avg.Precision : 1</li>
+<li>Avg.Recall : 1</li>
+<li>Avg.F-Measures : 1</li>
+</ul>
+<h2>References</h2>
+<ul>
+<li>Sony Corporation. Neural Network Console : Not just train and evaluate. You can design neural networks with fast and intuitive GUI. https://dl.sony.com/</li>
+<li>Sony Corporation. Neural Network Libraries : An open source software to make research, development and implementation of neural network more efficient. https://nnabla.org/</li>
+<li>ReLU - Vinod Nair, Geoffrey E. Hinton. Rectified Linear Units Improve Restricted Boltzmann Machines. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.165.6419&rep=rep1&type=pdf</li>
+<li>Adam - Juntang Zhuang, et al. (2020). AdaBelief Optimizer: Adapting Stepsizes by the Belief in Observed Gradients. https://arxiv.org/abs/2010.07468</li>
+</ul>

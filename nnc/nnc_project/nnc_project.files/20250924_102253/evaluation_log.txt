@@ -1,0 +1,15 @@
+2025-09-24 10:26:38,024 Evaluation process is started.
+python "C:\neural_network_console_340\libs\Python\Lib\site-packages\nn_cli\cli.py" forward
+	-c "C:\neural_network_console_340\work\mtkernel_3_microbit-main\nnc\nnc_project\nnc_project.files\20250924_102253\results.nnp"
+	-d "C:\neural_network_console_340\work\mtkernel_3_microbit-main\nnc\tr_data\5\val_seed_20250924_1.csv"
+	-o "C:\neural_network_console_340\work\mtkernel_3_microbit-main\nnc\nnc_project\nnc_project.files\20250924_102253"
+	--replace_path
+2025-09-24 10:26:41,818 [nnabla]: [CALLBACK]: Exec forward on local
+2025-09-24 10:26:41,847 [nnabla]: Using context "Context(backend=['cpu:float'], array_class='CpuCachedArray', device_id='')"
+2025-09-24 10:26:41,890 [nnabla]: data 64 / 334
+2025-09-24 10:26:41,893 [nnabla]: data 128 / 334
+2025-09-24 10:26:41,896 [nnabla]: data 192 / 334
+2025-09-24 10:26:41,900 [nnabla]: data 256 / 334
+2025-09-24 10:26:41,905 [nnabla]: data 320 / 334
+2025-09-24 10:26:41,907 [nnabla]: data 334 / 334
+2025-09-24 10:26:41,913 [nnabla]: Forward Completed.
