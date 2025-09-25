@@ -25,3 +25,8 @@ build_make/*
 
 !nnc/
 !nnc/**
+
+!README.md
+!operation_manual.md
+!img/
+!img/**
