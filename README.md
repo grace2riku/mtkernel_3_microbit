@@ -156,6 +156,6 @@ TRONプログラミングコンテスト2025の開発環境・ツール部門に
 | 99 | [app_sample/vtrecv.h](./app_sample/vtrecv.h) | NT-Shell | 0.3.1 | MIT | [NT-Shell](https://cubeatsystems.com/ntshell/index.html) | [Shinichiro Nakamura (CuBeatSystems)](https://shinta-main-jp.blogspot.com/) |  |
 | 100 | [app_sample/vtsend.c](./app_sample/vtsend.c) | NT-Shell | 0.3.1 | MIT | [NT-Shell](https://cubeatsystems.com/ntshell/index.html) | [Shinichiro Nakamura (CuBeatSystems)](https://shinta-main-jp.blogspot.com/) |  |
 | 101 | [app_sample/vtsend.h](./app_sample/vtsend.h) | NT-Shell | 0.3.1 | MIT | [NT-Shell](https://cubeatsystems.com/ntshell/index.html) | [Shinichiro Nakamura (CuBeatSystems)](https://shinta-main-jp.blogspot.com/) |  |
-| 102 | [app_sample/xprintf.c](./app_sample/xprintf.c) | xprintf | 2021. 7. 31 | [ソースコード参照](./app_sample/xprintf.c) | [xprintf](https://elm-chan.org/fsw/strf/xprintf_j.html) | [ChaN](https://shinta-main-jp.blogspot.com/) |  |
-| 103 | [app_sample/xprintf.h](./app_sample/xprintf.h) | xprintf | 2021. 7. 31 | [ソースコード参照](./app_sample/xprintf.c) | [xprintf](https://elm-chan.org/fsw/strf/xprintf_j.html) | [ChaN](https://shinta-main-jp.blogspot.com/) |  |
+| 102 | [app_sample/xprintf.c](./app_sample/xprintf.c) | xprintf | 2021. 7. 31 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) | [xprintf](https://elm-chan.org/fsw/strf/xprintf_j.html) | [ChaN](https://elm-chan.org/index_j.html) |  |
+| 103 | [app_sample/xprintf.h](./app_sample/xprintf.h) | xprintf | 2021. 7. 31 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) | [xprintf](https://elm-chan.org/fsw/strf/xprintf_j.html) | [ChaN](https://elm-chan.org/index_j.html) |  |
 
