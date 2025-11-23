@@ -51,8 +51,6 @@ TRONプログラミングコンテスト2025の開発環境・ツール部門に
 
 ## ライセンス
 
-確認中...
-
 | No | ソースコード名称 | OSS名称 | OSSバージョン | ライセンス | OSS参照先 | 著作権者 | 変更有無（変更していたら変更理由） |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1 | [app_sample/acceleration_sensor.c](./app_sample/acceleration_sensor.c) | μT-Kernel × AIの学習環境（micro:bit） |  | MIT | [mtkernel_3_microbit](https://github.com/grace2riku/mtkernel_3_microbit) | [grace2riku](https://github.com/grace2riku) |  |
@@ -86,8 +84,8 @@ TRONプログラミングコンテスト2025の開発環境・ツール部門に
 | 28 | [app_sample/gpio.h](./app_sample/gpio.h) | μT-Kernel × AIの学習環境（micro:bit） |  | MIT | [mtkernel_3_microbit](https://github.com/grace2riku/mtkernel_3_microbit) | [grace2riku](https://github.com/grace2riku) |  |
 | 29 | [app_sample/Hook.c](./app_sample/Hook.c) | μT-Kernel × AIの学習環境（micro:bit） |  | MIT | [mtkernel_3_microbit](https://github.com/grace2riku/mtkernel_3_microbit) | [grace2riku](https://github.com/grace2riku) |  |
 | 30 | [app_sample/Hook.h](./app_sample/Hook.h) | μT-Kernel × AIの学習環境（micro:bit） |  | MIT | [mtkernel_3_microbit](https://github.com/grace2riku/mtkernel_3_microbit) | [grace2riku](https://github.com/grace2riku) |  |
-| 31 | [app_sample/iic.h](./app_sample/iic.h) | μT-Kernel × AIの学習環境（micro:bit） |  | ※要確認 |  |  |  |
-| 32 | [app_sample/iic_reg.c](./app_sample/iic_reg.c) | μT-Kernel × AIの学習環境（micro:bit） |  | ※要確認 |  | Personal Media Corporation |  |
+| 31 | [app_sample/iic.h](./app_sample/iic.h) | μT-Kernel × AIの学習環境（micro:bit） |  |  |  | Personal Media Corporation |  |
+| 32 | [app_sample/iic_reg.c](./app_sample/iic_reg.c) | μT-Kernel × AIの学習環境（micro:bit） |  |  |  | Personal Media Corporation |  |
 | 33 | [app_sample/led.c](./app_sample/led.c) | μT-Kernel × AIの学習環境（micro:bit） |  | MIT | [mtkernel_3_microbit](https://github.com/grace2riku/mtkernel_3_microbit) | [grace2riku](https://github.com/grace2riku) |  |
 | 35 | [app_sample/led.h](./app_sample/led.h) | μT-Kernel × AIの学習環境（micro:bit） |  | MIT | [mtkernel_3_microbit](https://github.com/grace2riku/mtkernel_3_microbit) | [grace2riku](https://github.com/grace2riku) |  |
 | 36 | [app_sample/list.c](./app_sample/list.c) | nnabla-c-runtime | 1.38.0 | Apache License, Version 2.0 | [nnabla-c-runtime](https://github.com/sony/nnabla-c-runtime) | [sony](https://github.com/sony) |  |
@@ -105,7 +103,7 @@ TRONプログラミングコンテスト2025の開発環境・ツール部門に
 | 48 | [app_sample/Navi.c](./app_sample/Navi.c) | μT-Kernel × AIの学習環境（micro:bit） |  | MIT | [mtkernel_3_microbit](https://github.com/grace2riku/mtkernel_3_microbit) | [grace2riku](https://github.com/grace2riku) |  |
 | 49 | [app_sample/Navi.h](./app_sample/Navi.h) | μT-Kernel × AIの学習環境（micro:bit） |  | MIT | [mtkernel_3_microbit](https://github.com/grace2riku/mtkernel_3_microbit) | [grace2riku](https://github.com/grace2riku) |  |
 | 50 | [app_sample/network.h](./app_sample/network.h) | nnabla-c-runtime | 1.38.0 | Apache License, Version 2.0 | [nnabla-c-runtime](https://github.com/sony/nnabla-c-runtime) | [sony](https://github.com/sony) |  |
-| 51 | [app_sample/nrf5_iic.c](./app_sample/nrf5_iic.c) | μT-Kernel × AIの学習環境（micro:bit） |  | ※要確認 |  | Personal Media Corporation |  |
+| 51 | [app_sample/nrf5_iic.c](./app_sample/nrf5_iic.c) | μT-Kernel × AIの学習環境（micro:bit） |  |  |  | Personal Media Corporation |  |
 | 52 | [app_sample/ntconf.h](./app_sample/ntconf.h) | NT-Shell | 0.3.1 | MIT | [NT-Shell](https://cubeatsystems.com/ntshell/index.html) | [Shinichiro Nakamura (CuBeatSystems)](https://shinta-main-jp.blogspot.com/) |  |
 | 53 | [app_sample/ntint.h](./app_sample/ntint.h) | NT-Shell | 0.3.1 | MIT | [NT-Shell](https://cubeatsystems.com/ntshell/index.html) | [Shinichiro Nakamura (CuBeatSystems)](https://shinta-main-jp.blogspot.com/) |  |
 | 54 | [app_sample/ntlibc.c](./app_sample/ntlibc.c) | NT-Shell | 0.3.1 | MIT | [NT-Shell](https://cubeatsystems.com/ntshell/index.html) | [Shinichiro Nakamura (CuBeatSystems)](https://shinta-main-jp.blogspot.com/) |  |
